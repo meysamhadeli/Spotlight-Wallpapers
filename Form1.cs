@@ -43,6 +43,10 @@ namespace SpotlightWallpaper
 
         private async Task init()
         {
+            this.ListView1.SmallImageList = null;
+            this.ListView1.LargeImageList = null;
+            this.ImageList1.Images.Clear();
+            this.ListView1.Items.Clear();
             num = 0;
             this.Info.Text = null;
             List<string> ext = new List<string> {".jpg", ".jpeg"};
@@ -85,7 +89,7 @@ namespace SpotlightWallpaper
                 }
                 else
                 {
-                    this.setwall($"{patch}\\{files.Select(x => x.Name).First()}");
+                    this.PictureBox1.ImageLocation = $"{patch}\\{files.Select(x => x.Name).First()}";
                 }
 
                 this.TotalImage.Text = $"{num} Wallpapers spotlight found";
@@ -96,6 +100,10 @@ namespace SpotlightWallpaper
 
         private async Task getwallz()
         {
+            this.ListView1.SmallImageList = null;
+            this.ListView1.LargeImageList = null;
+            this.ImageList1.Images.Clear();
+            this.ListView1.Items.Clear();
             this.Info.Text = null;
             FileInfo[] files = null;
             List<string> ext = new List<string> {".jpg", ".jpeg"};
@@ -152,11 +160,13 @@ namespace SpotlightWallpaper
                 {
                     if (newImageName!=null)
                     {
-                        this.setwall($"{patch}\\{newImageName}");
+                        this.PictureBox1.ImageLocation = $"{patch}\\{files.Select(x => x.Name).First()}";
                     }
                     else
                     {
                         this.Info.Text = "No Wallpapers were found!";
+                        this.PictureBox1.ImageLocation = $"{patch}\\{files.Select(x => x.Name).First()}";
+
                     }
                 }
 
@@ -241,9 +251,9 @@ namespace SpotlightWallpaper
             }
         }
 
-        public async Task<string> GetBingImage()
+        public async Task<string> GetBingImage(FileInfo[] files)
         {
-            return await BingApi.WriteImage();
+            return await BingApi.WriteImage(files);
         }
         
          private async Task getwallzBing()
@@ -254,13 +264,18 @@ namespace SpotlightWallpaper
             this.ListView1.Items.Clear();
             this.ListView1.SmallImageList = null;
             this.ListView1.LargeImageList = null;
-            
+            bingNum = 0;
+
             FileInfo[] files = null;
+            List<string> ext = new List<string> {".jpg", ".jpeg"};
             
-                var newImageName = await GetBingImage();
+            string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
+            files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
+                .Where(path => ext.Contains(Path.GetExtension(path.Name)))
+                .Select(x => new FileInfo(x.FullName)).ToArray();
+            
+                var newImageName = await GetBingImage(files);
                 
-                List<string> ext = new List<string> {".jpg", ".jpeg"};
-                string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
                 files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
                     .Where(path => ext.Contains(Path.GetExtension(path.Name)))
                     .Select(x => new FileInfo(x.FullName)).ToArray();
@@ -276,8 +291,7 @@ namespace SpotlightWallpaper
                         Bitmap bitmap = new Bitmap(fileInfo.FullName);
                         if (bitmap.Width != 1)
                         {
-                            if (newImageName != null && fileInfo.Name.Contains(newImageName) &&
-                                bitmap.Width == 1920 | bitmap.Width == 1080)
+                            if (bitmap.Width == 1920 | bitmap.Width == 1080)
                                 {
                                     var imageName = $"{fileInfo.Name}";
                                     this.ImageList1.Images.Add(this.GetThumbnail(bitmap));
@@ -302,10 +316,11 @@ namespace SpotlightWallpaper
                 {
                     if (newImageName !=null)
                     {
-                        this.setwall($"{patch}\\{newImageName}");
+                        this.PictureBox1.ImageLocation = $"{patch}\\{files.Select(x => x.Name).First()}";
                     }
                     else
                     {
+                        this.PictureBox1.ImageLocation = $"{patch}\\{files.Select(x => x.Name).First()}";
                         this.Info.Text = "No Wallpapers were found!";
                     }
                 }

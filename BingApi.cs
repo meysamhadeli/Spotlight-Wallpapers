@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -36,7 +37,7 @@ namespace SpotlightWallpaper
             return Task.FromResult(ImageUrl);
         }
         
-        public static async Task<string> WriteImage()
+        public static async Task<string> WriteImage(FileInfo[] files)
         {
             string ImageSavePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
             Bitmap bmpWallpaper;
@@ -50,6 +51,12 @@ namespace SpotlightWallpaper
                 {
                     Directory.CreateDirectory(ImageSavePath);
                 }
+
+                var names = files.Select(x => x.Name).ToList();
+                var p = "bing" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() +
+                        DateTime.Now.Day.ToString() + ".jpg";
+                if (names.Contains(p))
+                    return null;
                 bmpWallpaper.Save(ImageSavePath + "\\bing" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + ".jpg", ImageFormat.Jpeg);
             }
             string strSavePath = "bing" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + ".jpg";
