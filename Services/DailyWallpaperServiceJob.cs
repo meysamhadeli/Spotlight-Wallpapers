@@ -1,7 +1,13 @@
-﻿namespace SpotlightWallpaper.Services
+﻿using FluentScheduler;
+
+namespace SpotlightWallpaper.Services
 {
-    public class DailyWallpaperServiceJob
+    public class DailyWallpaperServiceJob: IJob
     {
-        
+        public async void Execute()
+        {
+            await BingApi.GetBingImage();
+            await SpotlightApi.GetSpotlightImage();
+        }
     }
 }

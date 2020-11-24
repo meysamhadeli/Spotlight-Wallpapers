@@ -9,6 +9,10 @@ namespace SpotlightWallpaper
 {
     public class UnSplash
     {
+        public UnSplash()
+        {
+            
+        }
         /// <summary>
         /// url to anspash
         /// </summary>
@@ -100,8 +104,8 @@ namespace SpotlightWallpaper
                     "{0}/category/{1}/{2}x{3}",
                     UNSPLASH_URL,
                     category,
-                    this.ImageSize.Width,
-                    this.ImageSize.Height);
+                    1920,
+                    1080);
 
                 string filename = await this.downloadImage(new Uri(url));
                 if (File.Exists(filename))

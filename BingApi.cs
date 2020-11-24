@@ -1,89 +1,55 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using RestSharp;
+
 
 namespace SpotlightWallpaper
 {
     public class BingApi
     {
-        public static Task<string> GetURL()
+        
+        public static async Task<string> GetBingImage()
         {
-            string InfoUrl = "http://cn.bing.com/HPImageArchive.aspx?idx=0&n=1";
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(InfoUrl);
-            request.Method = "GET";
-            request.ContentType = "text/html;charset=UTF-8";
-            string xmlDoc;
-            using (HttpWebResponse webResponse = (HttpWebResponse) request.GetResponse())
-            {
-                Stream stream = webResponse.GetResponseStream();
-                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                var client = new RestClient("http://www.bing.com/");
+                var request = new RestRequest("HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US", Method.GET);
+                var response = await client.ExecuteAsync<dynamic>(request);
+                string imageUrl = response.Data["images"][0]["url"];
+                var shs = response.Data["images"][0]["hsh"];
+                var imageRequest = new RestRequest(imageUrl, Method.GET);
+                var imageBytes = client.DownloadData(imageRequest);
+                string ImageSavePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing\{shs}.jpg";
+                string exPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
+                
+                List<string> ext = new List<string> {".jpg", ".jpeg"};
+                string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
+                var files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
+                    .Where(path => ext.Contains(Path.GetExtension(path.Name)))
+                    .Select(x => new FileInfo(x.FullName)).ToArray();
+
+                if (!Directory.Exists(exPath))
                 {
-                    xmlDoc = reader.ReadToEnd();
-                }
-            }
-
-            Regex regex = new Regex("<Url>(?<MyUrl>.*?)</Url>", RegexOptions.IgnoreCase);
-            MatchCollection collection = regex.Matches(xmlDoc);
-            string ImageUrl = "http://www.bing.com" + collection[0].Groups["MyUrl"].Value;
-            if (true)
-            {
-                ImageUrl = ImageUrl.Replace("1366x768", "1920x1080");
-            }
-
-            return Task.FromResult(ImageUrl);
-        }
-
-        public static async Task<string> WriteImage(FileInfo[] files)
-        {
-            string ImageSavePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
-            Bitmap bmpWallpaper;
-            WebRequest webreq = WebRequest.Create(await GetURL());
-
-            WebResponse webres = webreq.GetResponse();
-            using (Stream stream = webres.GetResponseStream())
-            {
-                bmpWallpaper = (Bitmap) Image.FromStream(stream);
-                if (!Directory.Exists(ImageSavePath))
-                {
-                    Directory.CreateDirectory(ImageSavePath);
+                    Directory.CreateDirectory(exPath);
                 }
 
                 var names = files.Select(x => x.Name).ToList();
-                if (names.Contains($"{bmpWallpaper.FrameDimensionsList[0]}.jpg"))
+                if (names.Contains($"{shs}.jpg"))
                 {
                     return null;
-
                 }
-                else
-                {
-                    bmpWallpaper.Save(ImageSavePath + "\\" + bmpWallpaper.FrameDimensionsList[0] + ".jpg",
-                        ImageFormat.Jpeg);
-                    string strSavePath = bmpWallpaper.FrameDimensionsList[0] + ".jpg";
-                    return strSavePath;
-                }
-            }
-
+                
+                File.WriteAllBytes(ImageSavePath, imageBytes);
+                return ImageSavePath;
         }
-    
-
-    [DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
-        public static extern int SystemParametersInfo(
-            int uAction,
-            int uParam,
-            string lpvParam,
-            int fuWinIni
-        );
-
-        public static async Task SetWallpaper(string strSavePath)
-        {
-            SystemParametersInfo(20, 1, strSavePath, 1);
-        }
+        
     }
 }

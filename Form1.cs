@@ -11,20 +11,29 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Knapcode.TorSharp;
+using SpotlightWallpaper.Enum;
+using SpotlightWallpaper.Services;
 
 namespace SpotlightWallpaper
 {
     public partial class Form1 : Form
     {
         int num = 0;
+        private UnSplash unsplash = null;
         private int bingNum = 0;
         private string current;
-
+        private CheckApi checkApi;
         public Form1()
         {
             InitializeComponent();
@@ -43,7 +52,7 @@ namespace SpotlightWallpaper
 
         private async Task initSpotlight()
         {
-            this.ListView1.SmallImageList = null;
+            checkApi = CheckApi.Spotlight;
             this.ListView1.LargeImageList = null;
             this.ImageList1.Images.Clear();
             this.ListView1.Items.Clear();
@@ -53,10 +62,14 @@ namespace SpotlightWallpaper
             this.Info.Text = null;
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
 
-            DirectoryInfo directoryInfo = new DirectoryInfo(string.Concat(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets"));
-
+           DirectoryInfo directoryInfo = new DirectoryInfo(string.Concat(
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"\\Spotlight"));
+            
+            if (!Directory.Exists(patch))
+            {
+                Directory.CreateDirectory(patch);
+            }
+            
             files = directoryInfo.GetFiles();
             if (files.Length > 0)
             {
@@ -71,7 +84,7 @@ namespace SpotlightWallpaper
                         {
                             if (bitmap.Width == 1920)
                             {
-                                var imageName = $"{fileInfo.Name}.jpg";
+                                var imageName = $"{fileInfo.Name}";
                                 this.ImageList1.Images.Add(this.GetThumbnail(bitmap));
                                 this.ListView1.Items.Add(imageName, num);
                                 num = checked(num + 1);
@@ -103,6 +116,7 @@ namespace SpotlightWallpaper
 
         private async Task getwallzSpotlight()
         {
+            checkApi = CheckApi.Spotlight;
             this.ListView1.SmallImageList = null;
             this.ListView1.LargeImageList = null;
             this.ImageList1.Images.Clear();
@@ -111,10 +125,15 @@ namespace SpotlightWallpaper
             FileInfo[] files = null;
             List<string> ext = new List<string> {".jpg", ".jpeg"};
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
-
+            string pathSmallImage = null;
             DirectoryInfo directoryInfo = new DirectoryInfo(string.Concat(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets"));
+            
+            DirectoryInfo df = new DirectoryInfo(string.Concat(
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"\\Spotlight"));
+
+            var savefiles = df.GetFiles();
 
             files = directoryInfo.GetFiles();
 
@@ -129,9 +148,9 @@ namespace SpotlightWallpaper
                         Bitmap bitmap = new Bitmap(fileInfo.FullName);
                         if (bitmap.Width != 1)
                         {
-                            if (bitmap.Width == 1920)
+                            if (bitmap.Width == 1920 || bitmap.Width == 1900)
                             {
-                                if (files.Any(x => x.Name == $"{fileInfo.Name}"))
+                                if (savefiles.Any(x => x.Name == $"{fileInfo.Name}.jpg"))
                                     continue;
                                 var imageName = $"{fileInfo.Name}";
                                 this.ImageList1.Images.Add(this.GetThumbnail(bitmap));
@@ -139,6 +158,7 @@ namespace SpotlightWallpaper
                                 num = checked(num + 1);
                                 MyProject.Computer.FileSystem.CopyFile(fileInfo.FullName,
                                     $"{patch}\\{fileInfo.Name}.jpg", true);
+                                pathSmallImage = $"{patch}\\{fileInfo.Name}.jpg";
                             }
                         }
                     }
@@ -149,6 +169,8 @@ namespace SpotlightWallpaper
                         ProjectData.ClearProjectError();
                     }
                 }
+                this.PictureBox1.ImageLocation = pathSmallImage;
+
 
                 await initSpotlight();
                 
@@ -156,21 +178,34 @@ namespace SpotlightWallpaper
                 this.ListView1.LargeImageList = this.ImageList1;
             }
         }
-
-        const int SPI_SETDESKWALLPAPER = 20;
-        const int SPIF_UPDATEINIFILE = 0x01;
-        const int SPIF_SENDWININICHANGE = 0x02;
-
-        public void setwall(string patc)
+        
+        public async Task setwall(string patc)
         {
-            SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, patc, SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
+            await Win32.SetWallpaper(patc);
             this.PictureBox1.ImageLocation = patc;
         }
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            //await test();
+            // await ServiceConfig.Run();
             await this.initSpotlight();
         }
+
+
+        public async Task test()
+        {
+            UnSplash u = new UnSplash();
+            FileInfo file = await u.Next();
+            if (file != null && file.Exists)
+            {
+                // this.lastChange = DateTime.Now;
+                // Wallpaper.SetWallpaper(file.FullName, Wallpaper.BackgroundStyle.Fill);
+                // this.progress.Visibility = Visibility.Collapsed;
+                // this.nextImage.IsEnabled = true;
+            }
+        }
+        
 
         private Image GetThumbnail(Bitmap image)
         {
@@ -195,7 +230,15 @@ namespace SpotlightWallpaper
 
         private void setWallpaper_Click(object sender, EventArgs e)
         {
-            string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
+            string patch = null;
+            if (checkApi == CheckApi.Bing)
+            {
+                patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
+            }
+            if (checkApi == CheckApi.Spotlight)
+            {
+                patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
+            }
             string text = this.ListView1.SelectedItems[0].Text;
             var patchWallpaper = $"{patch}\\{text}";
             this.setwall(patchWallpaper);
@@ -206,38 +249,22 @@ namespace SpotlightWallpaper
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
             Process.Start(patch);
         }
-
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+        
 
         public bool ThumbCallback()
         {
             return true;
         }
+        
 
-        public async Task<string> GetSpotlightImage(FileInfo[] files)
+        public async Task<string> GetBingImage()
         {
-            try
-            {
-                var response = await SpotlighApi.GetSpotlightResponseAsync().ConfigureAwait(false);
-                var images = await SpotlighApi.GetImageInfo(response).ConfigureAwait(false);
-                return await SpotlighApi.WriteImage(images.Landscape.Url, files).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                this.Info.Text = "Server spotlight is filterd use DNS";
-                return null;
-            }
-        }
-
-        public async Task<string> GetBingImage(FileInfo[] files)
-        {
-            return await BingApi.WriteImage(files);
+            return await BingApi.GetBingImage();
         }
 
         private async Task getwallzBing()
         {
+            checkApi = CheckApi.Bing;
             this.Info.Text = null;
             this.ImageList1.Images.Clear();
             this.ListView1.Items.Clear();
@@ -247,57 +274,68 @@ namespace SpotlightWallpaper
 
             FileInfo[] files = null;
             List<string> ext = new List<string> {".jpg", ".jpeg"};
-
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
             files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
                 .Where(path => ext.Contains(Path.GetExtension(path.Name)))
                 .Select(x => new FileInfo(x.FullName)).ToArray();
-
-            var newImageName = await GetBingImage(files);
-
-            files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
-                .Where(path => ext.Contains(Path.GetExtension(path.Name)))
-                .Select(x => new FileInfo(x.FullName)).ToArray();
-
-            if (files.Length > 0)
+            try
             {
-                FileInfo[] fileInfoArray = files;
-                for (int i = 0; i < checked((int) fileInfoArray.Length); i = checked(i + 1))
+                var newImageName = await GetBingImage();
+
+                files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
+                    .Where(path => ext.Contains(Path.GetExtension(path.Name)))
+                    .Select(x => new FileInfo(x.FullName)).ToArray();
+
+                if (files.Length > 0)
                 {
-                    FileInfo fileInfo = fileInfoArray[i];
-                    try
+                    FileInfo[] fileInfoArray = files;
+                    for (int i = 0; i < checked((int) fileInfoArray.Length); i = checked(i + 1))
                     {
-                        Bitmap bitmap = new Bitmap(fileInfo.FullName);
-                        if (bitmap.Width != 1)
+                        FileInfo fileInfo = fileInfoArray[i];
+                        try
                         {
-                            if (bitmap.Width == 1920)
+                            Bitmap bitmap = new Bitmap(fileInfo.FullName);
+                            if (bitmap.Width != 1)
                             {
-                                if (files.Any(x => x.Name == $"{fileInfo.Name}"))
-                                    continue;
-                                var imageName = $"{fileInfo.Name}";
-                                this.ImageList1.Images.Add(this.GetThumbnail(bitmap));
-                                this.ListView1.Items.Add(imageName, bingNum);
-                                bingNum = checked(bingNum + 1);
+                                if (bitmap.Width == 1920)
+                                {
+                                    if (files.Any(x => x.Name == $"{fileInfo.Name}"))
+                                        continue;
+                                    var imageName = $"{fileInfo.Name}";
+                                    this.ImageList1.Images.Add(this.GetThumbnail(bitmap));
+                                    this.ListView1.Items.Add(imageName, bingNum);
+                                    bingNum = checked(bingNum + 1);
+                                }
                             }
                         }
+                        catch (Exception exception)
+                        {
+                            ProjectData.SetProjectError(exception);
+                            Console.WriteLine(exception.Message);
+                            ProjectData.ClearProjectError();
+                        }
                     }
-                    catch (Exception exception)
+                    
+                    if (!(num > 0))
                     {
-                        ProjectData.SetProjectError(exception);
-                        Console.WriteLine(exception.Message);
-                        ProjectData.ClearProjectError();
+                        this.Info.Text = "No Wallpapers were found!";
                     }
-                }
-
-                await initBing();
+                    await initBing();
                 
-                this.ListView1.SmallImageList = this.ImageList1;
-                this.ListView1.LargeImageList = this.ImageList1;
+                    this.ListView1.SmallImageList = this.ImageList1;
+                    this.ListView1.LargeImageList = this.ImageList1;
+                }
             }
+            catch (Exception e)
+            {
+                this.Info.Text = "No response was received from the server";
+            }
+          
         }
 
         private async Task initBing()
         {
+            checkApi = CheckApi.Bing;
             this.Info.Text = null;
             this.ImageList1.Images.Clear();
             this.ListView1.Items.Clear();
