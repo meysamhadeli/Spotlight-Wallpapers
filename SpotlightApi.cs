@@ -24,7 +24,7 @@ namespace SpotlightWallpaper
 
             var files = directoryInfo.GetFiles();
             var savefiles = df.GetFiles();
-
+            var reciveNewWallpapers = new List<string>();
             if (files.Length > 0)
             {
                 foreach (var fileInfo in files)
@@ -39,9 +39,16 @@ namespace SpotlightWallpaper
                                 continue;
                             MyProject.Computer.FileSystem.CopyFile(fileInfo.FullName,
                                 $"{patch}\\{fileInfo.Name}.jpg", true);
+                            
+                            reciveNewWallpapers.Add($"{patch}\\{fileInfo.Name}.jpg");
                         }
                     }
                 }
+            }
+
+            if (reciveNewWallpapers.Any())
+            {
+                await Win32.SetWallpaper(reciveNewWallpapers.LastOrDefault());
             }
         }
     }

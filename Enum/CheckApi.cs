@@ -3,6 +3,7 @@
     public enum CheckApi:int
     {
         Spotlight,
-        Bing
+        Bing,
+        UnSplash
     }
 }

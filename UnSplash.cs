@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace SpotlightWallpaper
@@ -11,27 +14,28 @@ namespace SpotlightWallpaper
     {
         public UnSplash()
         {
-            
         }
+
         /// <summary>
         /// url to anspash
         /// </summary>
-        private const string UNSPLASH_URL = "https://source.unsplash.com/";
+        private static string UNSPLASH_URL = "https://source.unsplash.com/";
 
         /// <summary>
         /// local filename 
         /// </summary>
-        private string localPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "UnSplash");
+        private static string localPath =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "UnSplash");
 
         /// <summary>
         /// for random choose only
         /// </summary>
-        private Random random = new Random();
+        private static Random random = new Random();
 
         /// <summary>
         /// current image
         /// </summary>
-        private FileInfo current = null;
+        private static FileInfo current = null;
 
         /// <summary>
         /// unsplash image categories
@@ -39,103 +43,154 @@ namespace SpotlightWallpaper
         public enum Categories : int
         {
             Random = -1,
-            Buildings = 0,
-            Food = 1,
-            Nature = 2,
+            Nature = 0,
+            Wallpapers = 1,
+            Travel = 2,
             People = 3,
-            Technology = 4,
-            Objects = 5
         }
-
-        /// <summary>
-        /// default image size
-        /// </summary>
-        public Size ImageSize = new Size(1280, 1024);
 
         /// <summary>
         /// current unsplash image category
         /// </summary>
-        public Categories Category = Categories.Objects;
-
-        /// <summary>
-        /// constructor
-        /// </summary>
-        // public Unsplash()
-        // {
-        //     // if (!Directory.Exists(this.localPath))
-        //     // {
-        //     //     Helper.Directory.CreateDirectory(new DirectoryInfo(this.localPath));
-        //     // }
-        // }
-
+        public static Categories Category = Categories.Random;
+        
         /// <summary>
         /// get the current image fileinfo
         /// </summary>
         /// <returns>image fileinfo</returns>
         public FileInfo Current()
         {
-            return this.current;
+            return current;
         }
-        
-        public async Task<FileInfo> Next()
+
+        public static async Task<List<FileInfo>> GetUnSplashImages()
         {
-            if (Directory.Exists(this.localPath))
+            var fileInfoes = new List<FileInfo>();
+            var listUris = new List<string>();
+            for (int i = 0; i < 9; i++)
+            {
+                if (Directory.Exists(localPath))
+                {
+                    // build url
+                    string category = string.Empty;
+
+                    if (Category == Categories.Random)
+                    {
+                        // random image category
+                        Category = (Categories) random.Next(0, 5);
+                    }
+
+                    switch (Category)
+                    {
+                        case Categories.Travel:
+                            category = "travel";
+                            break;
+                        case Categories.Wallpapers:
+                            category = "wallpapers";
+                            break;
+                        case Categories.Nature:
+                            category = "nature";
+                            break;
+                        case Categories.People:
+                            category = "people";
+                            break;
+                    }
+
+                    string url = string.Format(
+                        "{0}/category/{1}/{2}x{3}",
+                        UNSPLASH_URL,
+                        category, 1920, 1080);
+                    if (!string.IsNullOrWhiteSpace(url))
+                        listUris.Add(url);
+                }
+            }
+
+            if (listUris.Any())
+            {
+                foreach (var url in listUris)
+                {
+                    string filename = await downloadImage(new Uri(url));
+                    if (File.Exists(filename))
+                    {
+                        current = new FileInfo(filename);
+                        fileInfoes.Add(current);
+                    }
+                }
+            }
+
+            return fileInfoes;
+
+
+            fileInfoes = null;
+            return null;
+        }
+
+        public static async Task<FileInfo> GetUnSplashImage()
+        {
+            var listUris = new List<string>();
+
+            if (Directory.Exists(localPath))
             {
                 // build url
                 string category = string.Empty;
 
-                if (this.Category == Categories.Random)
+                if (Category == Categories.Random)
                 {
                     // random image category
-                    this.Category = (Categories)this.random.Next(0, 5);
+                    Category = (Categories) random.Next(0, 5);
                 }
 
-                switch (this.Category)
+                switch (Category)
                 {
-                    case Categories.Buildings: category = "buildings"; break;
-                    case Categories.Food: category = "food"; break;
-                    case Categories.Nature: category = "nature"; break;
-                    case Categories.People: category = "people"; break;
-                    case Categories.Technology: category = "technology"; break;
-                    case Categories.Objects: category = "objects"; break;
+                    case Categories.Travel:
+                        category = "travel";
+                        break;
+                    case Categories.Wallpapers:
+                        category = "wallpapers";
+                        break;
+                    case Categories.Nature:
+                        category = "nature";
+                        break;
+                    case Categories.People:
+                        category = "people";
+                        break;
                 }
 
                 string url = string.Format(
                     "{0}/category/{1}/{2}x{3}",
                     UNSPLASH_URL,
-                    category,
-                    1920,
-                    1080);
-
-                string filename = await this.downloadImage(new Uri(url));
+                    category, 1920, 1080);
+                string filename = await downloadImage(new Uri(url));
                 if (File.Exists(filename))
                 {
-                    this.current = new FileInfo(filename);
-                    return this.current;
+                    current = new FileInfo(filename);
+                    return current;
                 }
             }
-            this.current = null;
+
+            current = null;
             return null;
         }
-        
         #region helper methoths
+
         /// <summary>
         /// download the image with url from unsplash
         /// </summary>
         /// <param name="uri">image uri</param>
         /// <returns>returns true if download success</returns>
-        private async Task<string> downloadImage(Uri uri)
+        private static async Task<string> downloadImage(Uri uri)
         {
             using (var client = new WebClient())
             {
                 try
                 {
-                    string filename = string.Format("{0}\\{1}.jpg", this.localPath, Guid.NewGuid());
+                    string filename = string.Format("{0}\\{1}.jpg", localPath, Guid.NewGuid());
                     await client.DownloadFileTaskAsync(uri, filename);
                     if (File.Exists(filename))
                     {
                         return filename;
                     }
+
                     return null;
                 }
                 catch (WebException ex)
@@ -146,6 +201,7 @@ namespace SpotlightWallpaper
                 }
             }
         }
+
         #endregion
     }
 }

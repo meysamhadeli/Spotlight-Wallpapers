@@ -26,7 +26,13 @@ namespace SpotlightWallpaper
                 string imageUrl = response.Data["images"][0]["url"];
                 var shs = response.Data["images"][0]["hsh"];
                 var imageRequest = new RestRequest(imageUrl, Method.GET);
-                var imageBytes = client.DownloadData(imageRequest);
+                Byte[] imageBytes = null;
+                
+               await Task.Run(() =>
+                {
+                    imageBytes = client.DownloadData(imageRequest);
+                });
+               
                 string ImageSavePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing\{shs}.jpg";
                 string exPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
                 
@@ -48,6 +54,7 @@ namespace SpotlightWallpaper
                 }
                 
                 File.WriteAllBytes(ImageSavePath, imageBytes);
+                await Win32.SetWallpaper(ImageSavePath);
                 return ImageSavePath;
         }
         
