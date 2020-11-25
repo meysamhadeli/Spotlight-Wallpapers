@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentScheduler;
+using SpotlightWallpaper.Services;
 
 namespace SpotlightWallpaper
 {
