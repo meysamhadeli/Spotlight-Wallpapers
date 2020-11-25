@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using FluentScheduler;
 using SpotlightWallpaper.Services;
 
-namespace SpotlightWallpaper
+namespace SpotlightWallpaper.Jobs
 {
    
         public class MyRegistry : Registry

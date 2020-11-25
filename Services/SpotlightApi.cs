@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using SpotlightWallpaper.My;
+using SpotlightWallpaper.Settings;
 
-namespace SpotlightWallpaper
+namespace SpotlightWallpaper.Services
 {
     public class SpotlightApi
     {

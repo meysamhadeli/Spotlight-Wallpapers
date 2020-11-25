@@ -1,7 +1,3 @@
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.ApplicationServices;
-using Microsoft.VisualBasic.CompilerServices;
-using SpotlightWallpaper;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections;
@@ -12,8 +8,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
 
-namespace SpotlightWallpaper.My
+namespace SpotlightWallpaper.Settings
 {
 	[GeneratedCode("MyTemplate", "11.0.0.0")]
 	[HideModuleName]

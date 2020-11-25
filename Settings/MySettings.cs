@@ -1,5 +1,3 @@
-using Microsoft.VisualBasic.ApplicationServices;
-using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.CodeDom.Compiler;
 using System.ComponentModel;
@@ -7,8 +5,11 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Microsoft.VisualBasic.ApplicationServices;
+using Microsoft.VisualBasic.CompilerServices;
+using SpotlightWallpaper.My;
 
-namespace SpotlightWallpaper.My
+namespace SpotlightWallpaper.Settings
 {
 	[CompilerGenerated]
 	[EditorBrowsable(EditorBrowsableState.Advanced)]

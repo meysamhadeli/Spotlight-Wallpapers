@@ -18,6 +18,9 @@ using FluentScheduler;
 using PixabaySharp;
 using PixabaySharp.Utility;
 using SpotlightWallpaper.Enum;
+using SpotlightWallpaper.Jobs;
+using SpotlightWallpaper.Services;
+using SpotlightWallpaper.Settings;
 using Registry = Microsoft.Win32.Registry;
 
 namespace SpotlightWallpaper

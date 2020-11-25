@@ -1,4 +1,3 @@
-using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -6,8 +5,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using Microsoft.VisualBasic.ApplicationServices;
+using SpotlightWallpaper.My;
 
-namespace SpotlightWallpaper.My
+namespace SpotlightWallpaper.Settings
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	[GeneratedCode("MyTemplate", "11.0.0.0")]

@@ -10,6 +10,7 @@ using System.IO;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using SpotlightWallpaper.Settings;
 
 namespace SpotlightWallpaper
 {

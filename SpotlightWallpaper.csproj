@@ -239,29 +239,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BingApi.cs" />
     <Compile Include="Enum\CheckApi.cs" />
-    <Compile Include="MyRegistry.cs" />
-    <Compile Include="Pexels.cs" />
-    <Compile Include="UnSplash.cs" />
+    <Compile Include="Jobs\MyRegistry.cs" />
+    <Compile Include="Services\BingApi.cs" />
     <Compile Include="Form1.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <AutoGen>false</AutoGen>
       <DesignTimeSharedInput>false</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="My\MySettings.cs">
+    <Compile Include="Settings\MySettings.cs">
       <AutoGen>false</AutoGen>
       <DesignTimeSharedInput>false</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="My\MySettingsProperty.cs">
+    <Compile Include="Settings\MySettingsProperty.cs">
       <AutoGen>false</AutoGen>
       <DesignTimeSharedInput>false</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="My\MyComputer.cs">
+    <Compile Include="Settings\MyComputer.cs">
       <AutoGen>false</AutoGen>
       <DesignTimeSharedInput>false</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="My\MyApplication.cs">
+    <Compile Include="Settings\MyApplication.cs">
       <AutoGen>false</AutoGen>
       <DesignTimeSharedInput>false</DesignTimeSharedInput>
     </Compile>
@@ -270,7 +268,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTimeSharedInput>true</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="My\MyProject.cs">
+    <Compile Include="Settings\MyProject.cs">
       <AutoGen>false</AutoGen>
       <DesignTimeSharedInput>false</DesignTimeSharedInput>
     </Compile>
@@ -284,7 +282,8 @@
       <DesignTimeSharedInput>false</DesignTimeSharedInput>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SpotlightApi.cs" />
+    <Compile Include="Services\SpotlightApi.cs" />
+    <Compile Include="Services\UnSplash.cs" />
     <Compile Include="WaitingForm.cs">
       <SubType>Form</SubType>
     </Compile>
