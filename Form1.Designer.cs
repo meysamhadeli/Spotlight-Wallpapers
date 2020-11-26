@@ -76,7 +76,7 @@ namespace SpotlightWallpaper
 		    this.checkNow.Location = new System.Drawing.Point(18, 93);
 		    this.checkNow.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 		    this.checkNow.Name = "checkNow";
-		    this.checkNow.Size = new System.Drawing.Size(199, 37);
+		    this.checkNow.Size = new System.Drawing.Size(175, 37);
 		    this.checkNow.TabIndex = 1;
 		    this.checkNow.Text = "Spotlight";
 		    this.checkNow.UseVisualStyleBackColor = true;
@@ -99,19 +99,19 @@ namespace SpotlightWallpaper
 		    // 
 		    this.optionsMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.setWallpaper, this.deleteToolStripMenuItem});
 		    this.optionsMenu.Name = "optionsMenu";
-		    this.optionsMenu.Size = new System.Drawing.Size(220, 48);
+		    this.optionsMenu.Size = new System.Drawing.Size(163, 48);
 		    // 
 		    // setWallpaper
 		    // 
 		    this.setWallpaper.Name = "setWallpaper";
-		    this.setWallpaper.Size = new System.Drawing.Size(219, 22);
-		    this.setWallpaper.Text = "Set As Desktop Background";
+		    this.setWallpaper.Size = new System.Drawing.Size(162, 22);
+		    this.setWallpaper.Text = "Set As Wallpaper";
 		    this.setWallpaper.Click += new System.EventHandler(this.setWallpaper_Click);
 		    // 
 		    // deleteToolStripMenuItem
 		    // 
 		    this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-		    this.deleteToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+		    this.deleteToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
 		    this.deleteToolStripMenuItem.Text = "Delete";
 		    this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
 		    // 
@@ -161,9 +161,9 @@ namespace SpotlightWallpaper
 		    // 
 		    // button1
 		    // 
-		    this.button1.Location = new System.Drawing.Point(18, 138);
+		    this.button1.Location = new System.Drawing.Point(18, 180);
 		    this.button1.Name = "button1";
-		    this.button1.Size = new System.Drawing.Size(199, 36);
+		    this.button1.Size = new System.Drawing.Size(175, 36);
 		    this.button1.TabIndex = 10;
 		    this.button1.Text = "Bing";
 		    this.button1.UseVisualStyleBackColor = true;
@@ -172,36 +172,36 @@ namespace SpotlightWallpaper
 		    // TotalImage
 		    // 
 		    this.TotalImage.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-		    this.TotalImage.Location = new System.Drawing.Point(255, 61);
+		    this.TotalImage.Location = new System.Drawing.Point(255, 30);
 		    this.TotalImage.Name = "TotalImage";
-		    this.TotalImage.Size = new System.Drawing.Size(305, 27);
+		    this.TotalImage.Size = new System.Drawing.Size(305, 23);
 		    this.TotalImage.TabIndex = 11;
 		    // 
 		    // Info
 		    // 
 		    this.Info.ForeColor = System.Drawing.Color.Red;
-		    this.Info.Location = new System.Drawing.Point(255, 29);
+		    this.Info.Location = new System.Drawing.Point(255, 65);
 		    this.Info.Name = "Info";
-		    this.Info.Size = new System.Drawing.Size(305, 24);
+		    this.Info.Size = new System.Drawing.Size(305, 23);
 		    this.Info.TabIndex = 12;
 		    // 
 		    // button2
 		    // 
-		    this.button2.Location = new System.Drawing.Point(218, 138);
+		    this.button2.Location = new System.Drawing.Point(199, 180);
 		    this.button2.Name = "button2";
-		    this.button2.Size = new System.Drawing.Size(32, 36);
+		    this.button2.Size = new System.Drawing.Size(49, 36);
 		    this.button2.TabIndex = 13;
-		    this.button2.Text = "+";
+		    this.button2.Text = "1+";
 		    this.button2.UseVisualStyleBackColor = true;
 		    this.button2.Click += new System.EventHandler(this.button2_Click);
 		    // 
 		    // button3
 		    // 
-		    this.button3.Location = new System.Drawing.Point(218, 93);
+		    this.button3.Location = new System.Drawing.Point(199, 93);
 		    this.button3.Name = "button3";
-		    this.button3.Size = new System.Drawing.Size(30, 37);
+		    this.button3.Size = new System.Drawing.Size(49, 37);
 		    this.button3.TabIndex = 14;
-		    this.button3.Text = "+";
+		    this.button3.Text = "10+";
 		    this.button3.UseVisualStyleBackColor = true;
 		    this.button3.Click += new System.EventHandler(this.button3_Click);
 		    // 
@@ -242,9 +242,9 @@ namespace SpotlightWallpaper
 		    // 
 		    // button4
 		    // 
-		    this.button4.Location = new System.Drawing.Point(18, 180);
+		    this.button4.Location = new System.Drawing.Point(18, 139);
 		    this.button4.Name = "button4";
-		    this.button4.Size = new System.Drawing.Size(198, 35);
+		    this.button4.Size = new System.Drawing.Size(175, 35);
 		    this.button4.TabIndex = 15;
 		    this.button4.Text = "UnSplash";
 		    this.button4.UseVisualStyleBackColor = true;
@@ -252,11 +252,11 @@ namespace SpotlightWallpaper
 		    // 
 		    // button5
 		    // 
-		    this.button5.Location = new System.Drawing.Point(218, 180);
+		    this.button5.Location = new System.Drawing.Point(199, 139);
 		    this.button5.Name = "button5";
-		    this.button5.Size = new System.Drawing.Size(32, 35);
+		    this.button5.Size = new System.Drawing.Size(49, 35);
 		    this.button5.TabIndex = 16;
-		    this.button5.Text = "+";
+		    this.button5.Text = "10+";
 		    this.button5.UseVisualStyleBackColor = true;
 		    this.button5.Click += new System.EventHandler(this.addUnSplash_Click);
 		    // 
