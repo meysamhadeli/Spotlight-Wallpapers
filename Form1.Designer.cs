@@ -91,7 +91,7 @@ namespace SpotlightWallpaper
 		    this.ListView1.Location = new System.Drawing.Point(255, 93);
 		    this.ListView1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 		    this.ListView1.Name = "ListView1";
-		    this.ListView1.Size = new System.Drawing.Size(470, 430);
+		    this.ListView1.Size = new System.Drawing.Size(857, 560);
 		    this.ListView1.TabIndex = 3;
 		    this.ListView1.UseCompatibleStateImageBehavior = false;
 		    // 
@@ -264,7 +264,7 @@ namespace SpotlightWallpaper
 		    // 
 		    this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
 		    this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-		    this.ClientSize = new System.Drawing.Size(730, 527);
+		    this.ClientSize = new System.Drawing.Size(1117, 657);
 		    this.Controls.Add(this.button5);
 		    this.Controls.Add(this.button4);
 		    this.Controls.Add(this.button3);

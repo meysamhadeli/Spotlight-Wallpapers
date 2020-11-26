@@ -42,16 +42,14 @@ namespace SpotlightWallpaper.Services
         {
             Random = -1,
             Nature = 0,
-            Wallpapers = 1,
-            Travel = 2,
-            People = 3,
+            Wallpapers = 1
         }
 
         /// <summary>
         /// current unsplash image category
         /// </summary>
         public static Categories Category = Categories.Random;
-        
+
         /// <summary>
         /// get the current image fileinfo
         /// </summary>
@@ -75,22 +73,16 @@ namespace SpotlightWallpaper.Services
                     if (Category == Categories.Random)
                     {
                         // random image category
-                        Category = (Categories) random.Next(0, 5);
+                        Category = (Categories) random.Next(0, 1);
                     }
 
                     switch (Category)
                     {
-                        case Categories.Travel:
-                            category = "travel";
-                            break;
                         case Categories.Wallpapers:
                             category = "wallpapers";
                             break;
                         case Categories.Nature:
                             category = "nature";
-                            break;
-                        case Categories.People:
-                            category = "people";
                             break;
                     }
 
@@ -131,26 +123,19 @@ namespace SpotlightWallpaper.Services
             {
                 // build url
                 string category = string.Empty;
+                Category = Categories.Random;
+                
+                var rd = random.Next(0, 2);
+                Category = (Categories) rd;
 
-                if (Category == Categories.Random)
-                {
-                    // random image category
-                    Category = (Categories) random.Next(0, 5);
-                }
 
                 switch (Category)
                 {
-                    case Categories.Travel:
-                        category = "travel";
-                        break;
                     case Categories.Wallpapers:
                         category = "wallpapers";
                         break;
                     case Categories.Nature:
                         category = "nature";
-                        break;
-                    case Categories.People:
-                        category = "people";
                         break;
                 }
 
@@ -169,6 +154,7 @@ namespace SpotlightWallpaper.Services
             current = null;
             return null;
         }
+
         #region helper methoths
 
         /// <summary>

@@ -114,10 +114,7 @@ namespace SpotlightWallpaper
                     this.ListView1.SmallImageList = this.ImageList1;
                     this.ListView1.LargeImageList = this.ImageList1;
                 }
-                else
-                {
-                    this.Info.Text = "No Wallpapers were found!";
-                }
+              
             }
             catch (Exception e)
             {
@@ -177,14 +174,8 @@ namespace SpotlightWallpaper
                                 ProjectData.ClearProjectError();
                             }
                         }
-
-                        if (!(num > 0))
-                        {
-                            this.Info.Text = "No Wallpapers were found!";
-                        }
-
                         await initUnSplash();
-
+                        
                         this.ListView1.SmallImageList = this.ImageList1;
                         this.ListView1.LargeImageList = this.ImageList1;
                     }
@@ -585,6 +576,7 @@ namespace SpotlightWallpaper
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            TopMost = true;
             this.Show();
             this.WindowState = FormWindowState.Normal;
         }
@@ -608,11 +600,9 @@ namespace SpotlightWallpaper
 
         private async void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Are you sure to delete?", "Confirm", MessageBoxButtons.YesNo);
+           
             string patch = null;
 
-            if (dialogResult == DialogResult.Yes)
-            {
                 if (checkApi == CheckApi.Bing)
                 {
                     patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
@@ -622,6 +612,11 @@ namespace SpotlightWallpaper
                 {
                     patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
                 }
+                
+                if (checkApi == CheckApi.UnSplash)
+                {
+                    patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\UnSplash";
+                }
 
                 string text = this.ListView1.SelectedItems[0].Text;
                 var patchWallpaper = $"{patch}\\{text}";
@@ -630,20 +625,26 @@ namespace SpotlightWallpaper
                 {
                     if (checkApi == CheckApi.Spotlight)
                     {
+                        GC.Collect(); 
+                        GC.WaitForPendingFinalizers(); 
                         File.Delete(patchWallpaper);
                         await initSpotlight();
                     }
                     else if (checkApi == CheckApi.Bing)
                     {
+                        GC.Collect(); 
+                        GC.WaitForPendingFinalizers(); 
                         File.Delete(patchWallpaper);
                         await initBing();
                     }
+                    else
+                    {
+                        GC.Collect(); 
+                        GC.WaitForPendingFinalizers(); 
+                        File.Delete(patchWallpaper);
+                        await initUnSplash();
+                    }
                 }
-            }
-            else
-            {
-                return;
-            }
         }
 
         private async void unSolash_Click(object sender, EventArgs e)
