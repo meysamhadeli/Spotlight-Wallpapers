@@ -14,8 +14,8 @@ namespace SpotlightWallpaper.Jobs
                 {
                      Task.Run(async () =>
                     {
-                        await SpotlightApi.GetSpotlightImage();
                         await BingApi.GetBingImage();
+                        await SpotlightApi.GetSpotlightImage();
                     });
 
                 });

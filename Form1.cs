@@ -1,12 +1,8 @@
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.VisualBasic.Devices;
-using Microsoft.VisualBasic.MyServices;
-using SpotlightWallpaper.My;
-using SpotlightWallpaper.My.Resources;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -15,8 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FluentScheduler;
-using PixabaySharp;
-using PixabaySharp.Utility;
 using SpotlightWallpaper.Enum;
 using SpotlightWallpaper.Jobs;
 using SpotlightWallpaper.Services;
@@ -104,7 +98,7 @@ namespace SpotlightWallpaper
 
                     if (!(unSplashNum > 0))
                     {
-                        this.Info.Text = "No Wallpapers were found!";
+                        this.Info.Text = "No Wallpapers UnSplash were found!";
                     }
                     else
                     {
@@ -255,7 +249,7 @@ namespace SpotlightWallpaper
 
                 if (!(num > 0))
                 {
-                    this.Info.Text = "No Wallpapers were found!";
+                    this.Info.Text = "No Wallpapers Spotlight were found!";
                 }
                 else
                 {
@@ -473,11 +467,6 @@ namespace SpotlightWallpaper
                         }
                     }
 
-                    if (!(num > 0))
-                    {
-                        this.Info.Text = "No Wallpapers were found!";
-                    }
-
                     await initBing();
 
                     this.ListView1.SmallImageList = this.ImageList1;
@@ -541,7 +530,7 @@ namespace SpotlightWallpaper
 
                 if (!(num > 0))
                 {
-                    this.Info.Text = "No Wallpapers were found!";
+                    this.Info.Text = "No Wallpapers Bing were found!";
                 }
                 else
                 {

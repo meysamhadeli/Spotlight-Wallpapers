@@ -26,33 +26,11 @@ namespace SpotlightWallpaper.Services
             {
                 var response = await GetBatchResponseAsync();
                 var images = await GetImageInfo(response);
-
                 var iName = await WriteImage(images.Landscape.Url);
 
-                DirectoryInfo df = new DirectoryInfo(string.Concat(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "\\Spotlight"));
-
-                files = df.GetFiles();
-
-                if (files.Length > 0)
+                if (iName != null)
                 {
-                    FileInfo[] fileInfoArray = files;
-                    for (int i = 0; i < checked((int) fileInfoArray.Length); i = checked(i + 1))
-                    {
-                        FileInfo fileInfo = fileInfoArray[i];
-
-                        Bitmap bitmap = new Bitmap(fileInfo.FullName);
-                        if (bitmap.Width != 1)
-                        {
-                            if (bitmap.Width == 1920 || bitmap.Width == 1900)
-                            {
-                                if (files.Any(x => x.Name == $"{fileInfo.Name}"))
-                                    continue;
-                                var imageName = $"{fileInfo.Name}";
-                                reciveNewWallpapers.Add($"{patch}\\{imageName}");
-                            }
-                        }
-                    }
+                    reciveNewWallpapers.Add($"{patch}\\{iName}.jpg");
                 }
             }
             if (reciveNewWallpapers.Any())
