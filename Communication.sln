@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication", "Communication\Communication.csproj", "{6AD93F55-A416-4D0A-812D-66E0C3804AC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{DD5F3375-AB43-40E5-9F44-51131E1B30FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6AD93F55-A416-4D0A-812D-66E0C3804AC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AD93F55-A416-4D0A-812D-66E0C3804AC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AD93F55-A416-4D0A-812D-66E0C3804AC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AD93F55-A416-4D0A-812D-66E0C3804AC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD5F3375-AB43-40E5-9F44-51131E1B30FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD5F3375-AB43-40E5-9F44-51131E1B30FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD5F3375-AB43-40E5-9F44-51131E1B30FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD5F3375-AB43-40E5-9F44-51131E1B30FF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
