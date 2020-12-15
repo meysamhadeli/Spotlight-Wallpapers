@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FluentScheduler;
+using Microsoft.Win32;
 using SpotlightWallpaper.Enum;
 using SpotlightWallpaper.Jobs;
 using SpotlightWallpaper.Services;
@@ -21,16 +22,36 @@ namespace SpotlightWallpaper
 {
     public partial class Form1 : Form
     {
+
         int num = 0;
         private UnSplash unsplash = null;
         private int bingNum = 0;
         private int unSplashNum = 0;
         private string current;
         private CheckApi checkApi;
+        private bool killProcess = false; 
 
         public Form1()
         {
+            // get current process
+            Process current = Process.GetCurrentProcess();
+            // get all the processes with currnent process name
+            Process[] processes = Process.GetProcessesByName(current.ProcessName);
+            foreach (Process process in processes)
+            {
+                //Ignore the current process  
+                if (process.Id != current.Id)
+                {
+                    killProcess = true;
+                    process.Kill();
+                }
+            }
+            
             InitializeComponent();
+            if (!killProcess)
+            {
+                JobManager.Initialize(new MyRegistry());
+            }
         }
 
         private void btnAbout_Click(object sender, EventArgs e)
@@ -42,7 +63,6 @@ namespace SpotlightWallpaper
         {
             await initSpotlight();
         }
-
 
         private async Task initUnSplash()
         {
@@ -78,7 +98,7 @@ namespace SpotlightWallpaper
                             Bitmap bitmap = new Bitmap(fileInfo.FullName);
                             if (bitmap.Width != 1)
                             {
-                                if (bitmap.Width == 1920)
+                                if (bitmap.Width > 1000)
                                 {
                                     var imageName = $"{fileInfo.Name}";
                                     this.ImageList1.Images.Add(this.GetThumbnail(bitmap));
@@ -96,14 +116,8 @@ namespace SpotlightWallpaper
                         }
                     }
 
-                    if (!(unSplashNum > 0))
-                    {
-                        this.Info.Text = "No Wallpapers UnSplash were found!";
-                    }
-                    else
-                    {
-                        this.PictureBox1.ImageLocation = pathSmallImage;
-                    }
+                    this.PictureBox1.ImageLocation = pathSmallImage;
+                    
 
                     this.ListView1.SmallImageList = this.ImageList1;
                     this.ListView1.LargeImageList = this.ImageList1;
@@ -118,71 +132,34 @@ namespace SpotlightWallpaper
 
         private async Task getwallzUnSplash()
         {
+            label4.Text = $"downloading...";
             checkApi = CheckApi.UnSplash;
-            this.Info.Text = null;
-            this.ImageList1.Images.Clear();
-            this.ListView1.Items.Clear();
-            this.ListView1.SmallImageList = null;
-            this.ListView1.LargeImageList = null;
-            unSplashNum = 0;
+            this.Info.Text = string.Empty;
+            int downloadImageNum = 0;
 
-            List<string> ext = new List<string> {".jpg", ".jpeg"};
-            string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\UnSplash";
             try
             {
-                for (int j = 0; j < 10; j++)
-                {
-                    var newImageNames = await UnSplash.GetUnSplashImage();
-                    if (newImageNames == null)
+                var newImageNames = await UnSplash.GetUnSplashImage();
+
+                    if (newImageNames != null)
+                    {
+                        ++downloadImageNum;
+                        label4.Text = $"downloading image unsplash... {downloadImageNum}";
+                    }
+                    else
                     {
                         this.Info.Text = "No response was received from the server unsplash";
-                        break;
                     }
-
-                    var files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
-                        .Where(path => ext.Contains(Path.GetExtension(path.Name)))
-                        .Select(x => new FileInfo(x.FullName)).ToArray();
-
-                    if (files.Length > 0)
-                    {
-                        FileInfo[] fileInfoArray = files;
-                        for (int i = 0; i < checked((int) fileInfoArray.Length); i = checked(i + 1))
-                        {
-                            FileInfo fileInfo = fileInfoArray[i];
-                            try
-                            {
-                                Bitmap bitmap = new Bitmap(fileInfo.FullName);
-                                if (bitmap.Width != 1)
-                                {
-                                    if (bitmap.Width == 1920)
-                                    {
-                                        if (files.Any(x => x.Name == $"{fileInfo.Name}"))
-                                            continue;
-                                        var imageName = $"{fileInfo.Name}";
-                                        this.ImageList1.Images.Add(this.GetThumbnail(bitmap));
-                                        this.ListView1.Items.Add(imageName, unSplashNum);
-                                        unSplashNum = checked(unSplashNum + 1);
-                                    }
-                                }
-                            }
-                            catch (Exception exception)
-                            {
-                                ProjectData.SetProjectError(exception);
-                                Console.WriteLine(exception.Message);
-                                ProjectData.ClearProjectError();
-                            }
-                        }
-
-                        await initUnSplash();
-
-                        this.ListView1.SmallImageList = this.ImageList1;
-                        this.ListView1.LargeImageList = this.ImageList1;
-                    }
-                }
+                
+                label4.Text = $"downloading image unsplash... {downloadImageNum}";
+                await Task.Delay(1000);
+                label4.Text = String.Empty;
+                await initUnSplash();
             }
             catch (Exception e)
             {
                 this.Info.Text = "No response was received from the server unsplash";
+                label4.Text = String.Empty;
             }
         }
 
@@ -246,15 +223,8 @@ namespace SpotlightWallpaper
                         ProjectData.ClearProjectError();
                     }
                 }
-
-                if (!(num > 0))
-                {
-                    this.Info.Text = "No Wallpapers Spotlight were found!";
-                }
-                else
-                {
-                    this.PictureBox1.ImageLocation = pathSmallImage;
-                }
+                
+                this.PictureBox1.ImageLocation = pathSmallImage;
 
                 this.ListView1.SmallImageList = this.ImageList1;
                 this.ListView1.LargeImageList = this.ImageList1;
@@ -265,70 +235,28 @@ namespace SpotlightWallpaper
 
         private async Task getwallzSpotlight()
         {
+            label5.Text = $"downloading...";
             checkApi = CheckApi.Spotlight;
-            this.ListView1.SmallImageList = null;
-            this.ListView1.LargeImageList = null;
-            this.ImageList1.Images.Clear();
-            this.ListView1.Items.Clear();
-            this.Info.Text = null;
-            FileInfo[] files = null;
-            List<string> ext = new List<string> {".jpg", ".jpeg"};
-            string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
-            string pathSmallImage = null;
+            int downloadImageNum = 0;
+            this.Info.Text = string.Empty;
+
             try
             {
-                for (int j = 0; j < 10; j++)
-                {
+             
                     var response = await SpotlightApi.GetBatchResponseAsync();
                     var images = await SpotlightApi.GetImageInfo(response);
+                    var imageName = await SpotlightApi.WriteImage(images.Landscape.Url);
 
-                    var iName = await SpotlightApi.WriteImage(images.Landscape.Url);
-
-                    DirectoryInfo df = new DirectoryInfo(string.Concat(
-                        Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "\\Spotlight"));
-
-                    files = df.GetFiles();
-
-                    if (files.Length > 0)
+                    if (imageName != null)
                     {
-                        FileInfo[] fileInfoArray = files;
-                        for (int i = 0; i < checked((int) fileInfoArray.Length); i = checked(i + 1))
-                        {
-                            FileInfo fileInfo = fileInfoArray[i];
-                            try
-                            {
-                                Bitmap bitmap = new Bitmap(fileInfo.FullName);
-                                if (bitmap.Width != 1)
-                                {
-                                    if (bitmap.Width == 1920 || bitmap.Width == 1900)
-                                    {
-                                        if (files.Any(x => x.Name == $"{fileInfo.Name}"))
-                                            continue;
-                                        var imageName = $"{fileInfo.Name}";
-                                        this.ImageList1.Images.Add(this.GetThumbnail(bitmap));
-                                        this.ListView1.Items.Add(imageName, num);
-                                        num = checked(num + 1);
-                                        pathSmallImage = $"{patch}\\{fileInfo.Name}";
-                                    }
-                                }
-                            }
-                            catch (Exception exception)
-                            {
-                                ProjectData.SetProjectError(exception);
-                                Console.WriteLine(exception.Message);
-                                ProjectData.ClearProjectError();
-                            }
-                        }
-
-                        this.PictureBox1.ImageLocation = pathSmallImage;
-
-
-                        await initSpotlight();
-
-                        this.ListView1.SmallImageList = this.ImageList1;
-                        this.ListView1.LargeImageList = this.ImageList1;
+                        ++downloadImageNum;
+                        label5.Text = $"downloading image spotlight... {downloadImageNum}";
                     }
-                }
+                
+                label5.Text = $"downloading image spotlight... {downloadImageNum}";
+                await Task.Delay(1000);
+                label5.Text = String.Empty;
+                await initSpotlight();
             }
             catch (Exception e)
             {
@@ -344,10 +272,12 @@ namespace SpotlightWallpaper
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            this.WindowState = FormWindowState.Minimized;
             this.ShowInTaskbar = false;
-            JobManager.Initialize(new MyRegistry());
-            await this.initSpotlight();
+            this.WindowState = FormWindowState.Minimized;
+            notifyIcon1.ShowBalloonTip(1000, "Spotlight Wallpapers", "Spotlight Wallpapers is running minimized to try." +'\n'+
+                                                                     "to exit right click this icon and select exit.", ToolTipIcon.Info);
+            await this.initBing();
+            
         }
 
 
@@ -415,63 +345,25 @@ namespace SpotlightWallpaper
 
         private async Task getwallzBing()
         {
+            label3.Text = $"downloading...";
             checkApi = CheckApi.Bing;
-            this.Info.Text = null;
-            this.ImageList1.Images.Clear();
-            this.ListView1.Items.Clear();
-            this.ListView1.SmallImageList = null;
-            this.ListView1.LargeImageList = null;
-            bingNum = 0;
+            int downloadImageNum = 0;
+            this.Info.Text = string.Empty;
 
-            FileInfo[] files = null;
-            List<string> ext = new List<string> {".jpg", ".jpeg"};
-            string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
-            files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
-                .Where(path => ext.Contains(Path.GetExtension(path.Name)))
-                .Select(x => new FileInfo(x.FullName)).ToArray();
             try
             {
                 var newImageName = await GetBingImage();
 
-                files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
-                    .Where(path => ext.Contains(Path.GetExtension(path.Name)))
-                    .Select(x => new FileInfo(x.FullName)).ToArray();
-
-                if (files.Length > 0)
+                if (newImageName != null)
                 {
-                    FileInfo[] fileInfoArray = files;
-                    for (int i = 0; i < checked((int) fileInfoArray.Length); i = checked(i + 1))
-                    {
-                        FileInfo fileInfo = fileInfoArray[i];
-                        try
-                        {
-                            Bitmap bitmap = new Bitmap(fileInfo.FullName);
-                            if (bitmap.Width != 1)
-                            {
-                                if (bitmap.Width == 1920)
-                                {
-                                    if (files.Any(x => x.Name == $"{fileInfo.Name}"))
-                                        continue;
-                                    var imageName = $"{fileInfo.Name}";
-                                    this.ImageList1.Images.Add(this.GetThumbnail(bitmap));
-                                    this.ListView1.Items.Add(imageName, bingNum);
-                                    bingNum = checked(bingNum + 1);
-                                }
-                            }
-                        }
-                        catch (Exception exception)
-                        {
-                            ProjectData.SetProjectError(exception);
-                            Console.WriteLine(exception.Message);
-                            ProjectData.ClearProjectError();
-                        }
-                    }
-
-                    await initBing();
-
-                    this.ListView1.SmallImageList = this.ImageList1;
-                    this.ListView1.LargeImageList = this.ImageList1;
+                    ++downloadImageNum;
+                    label3.Text = $"downloading image bing... {downloadImageNum}";
+                    await Task.Delay(1000);
                 }
+                label3.Text = $"downloading image bing... {downloadImageNum}";
+                await Task.Delay(1000);
+                label3.Text = String.Empty;
+                await initBing();
             }
             catch (Exception e)
             {
@@ -528,14 +420,7 @@ namespace SpotlightWallpaper
                     }
                 }
 
-                if (!(num > 0))
-                {
-                    this.Info.Text = "No Wallpapers Bing were found!";
-                }
-                else
-                {
-                    this.PictureBox1.ImageLocation = pathSmallImage;
-                }
+                this.PictureBox1.ImageLocation = pathSmallImage;
 
                 this.ListView1.SmallImageList = this.ImageList1;
                 this.ListView1.LargeImageList = this.ImageList1;
@@ -655,6 +540,13 @@ namespace SpotlightWallpaper
         private async void addUnSplash_Click(object sender, EventArgs e)
         {
             await this.getwallzUnSplash();
+        }
+
+        private void deAcToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            reg.DeleteValue("SpotlightWallpaper",false);
+            notifyIcon1.ShowBalloonTip(1000, "DeActivated Start With StartUp Windows", "DeActivated", ToolTipIcon.Info);
         }
     }
 }

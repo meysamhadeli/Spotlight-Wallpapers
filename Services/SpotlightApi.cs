@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
@@ -15,7 +16,7 @@ namespace SpotlightWallpaper.Services
 {
     public class SpotlightApi
     {
-        public static async Task GetSpotlightImage()
+        public static async Task<string> GetSpotlightImage()
         {
             FileInfo[] files = null;
             var reciveNewWallpapers = new List<string>();
@@ -37,6 +38,7 @@ namespace SpotlightWallpaper.Services
             {
                 await Win32.SetWallpaper(reciveNewWallpapers.LastOrDefault());
             }
+            return reciveNewWallpapers.LastOrDefault();
         }
 
         /// <summary>
@@ -59,6 +61,8 @@ namespace SpotlightWallpaper.Services
                 string responseUrl = batchQuery.ToString();
                 var responseMsg =
                     await client.GetAsync("https://arc.msn.com/v3/Delivery/Placement?" + batchQuery.ToString());
+                if(responseMsg.StatusCode !=HttpStatusCode.OK)
+                    throw new Exception();
                 return await responseMsg.Content.ReadAsStringAsync();
             }
         }

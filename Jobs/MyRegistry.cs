@@ -5,23 +5,20 @@ using SpotlightWallpaper.Services;
 
 namespace SpotlightWallpaper.Jobs
 {
-   
-        public class MyRegistry : Registry
+    public class MyRegistry : Registry
+    {
+        public MyRegistry()
         {
-            public MyRegistry()
+            Action someMethod = new Action(() =>
             {
-                Action someMethod = new Action(() =>
+                Task.Run(async () =>
                 {
-                     Task.Run(async () =>
-                    {
-                        await BingApi.GetBingImage();
-                        await SpotlightApi.GetSpotlightImage();
-                    });
-
+                    var spotlightImage = await SpotlightApi.GetSpotlightImage();
+                    await BingApi.GetBingImage(spotlightImage);
                 });
+            });
 
-                this.Schedule(someMethod).ToRunNow().AndEvery(1).Days();
-            }
+            this.Schedule(someMethod).ToRunNow().AndEvery(1).Days();
         }
-    
+    }
 }

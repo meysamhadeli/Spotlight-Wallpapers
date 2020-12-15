@@ -61,11 +61,15 @@ namespace SpotlightWallpaper
 		    this.button3 = new System.Windows.Forms.Button();
 		    this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 		    this.activeWithStartupWindowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+		    this.deAcToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 		    this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 		    this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 		    this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
 		    this.button4 = new System.Windows.Forms.Button();
 		    this.button5 = new System.Windows.Forms.Button();
+		    this.label3 = new System.Windows.Forms.Label();
+		    this.label4 = new System.Windows.Forms.Label();
+		    this.label5 = new System.Windows.Forms.Label();
 		    this.optionsMenu.SuspendLayout();
 		    ((System.ComponentModel.ISupportInitialize) (this.PictureBox1)).BeginInit();
 		    this.contextMenuStrip1.SuspendLayout();
@@ -73,10 +77,10 @@ namespace SpotlightWallpaper
 		    // 
 		    // checkNow
 		    // 
-		    this.checkNow.Location = new System.Drawing.Point(18, 93);
+		    this.checkNow.Location = new System.Drawing.Point(13, 172);
 		    this.checkNow.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 		    this.checkNow.Name = "checkNow";
-		    this.checkNow.Size = new System.Drawing.Size(175, 37);
+		    this.checkNow.Size = new System.Drawing.Size(186, 37);
 		    this.checkNow.TabIndex = 1;
 		    this.checkNow.Text = "Spotlight";
 		    this.checkNow.UseVisualStyleBackColor = true;
@@ -123,9 +127,9 @@ namespace SpotlightWallpaper
 		    // 
 		    // PictureBox1
 		    // 
-		    this.PictureBox1.Location = new System.Drawing.Point(20, 265);
+		    this.PictureBox1.Location = new System.Drawing.Point(12, 323);
 		    this.PictureBox1.Name = "PictureBox1";
-		    this.PictureBox1.Size = new System.Drawing.Size(230, 161);
+		    this.PictureBox1.Size = new System.Drawing.Size(236, 161);
 		    this.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 		    this.PictureBox1.TabIndex = 6;
 		    this.PictureBox1.TabStop = false;
@@ -133,9 +137,9 @@ namespace SpotlightWallpaper
 		    // Label1
 		    // 
 		    this.Label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		    this.Label1.Location = new System.Drawing.Point(18, 240);
+		    this.Label1.Location = new System.Drawing.Point(12, 298);
 		    this.Label1.Name = "Label1";
-		    this.Label1.Size = new System.Drawing.Size(230, 22);
+		    this.Label1.Size = new System.Drawing.Size(236, 22);
 		    this.Label1.TabIndex = 7;
 		    this.Label1.Text = "Current Wallpaper";
 		    this.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -151,9 +155,9 @@ namespace SpotlightWallpaper
 		    // 
 		    // btnAbout
 		    // 
-		    this.btnAbout.Location = new System.Drawing.Point(20, 441);
+		    this.btnAbout.Location = new System.Drawing.Point(13, 500);
 		    this.btnAbout.Name = "btnAbout";
-		    this.btnAbout.Size = new System.Drawing.Size(230, 33);
+		    this.btnAbout.Size = new System.Drawing.Size(235, 33);
 		    this.btnAbout.TabIndex = 9;
 		    this.btnAbout.Text = "About";
 		    this.btnAbout.UseVisualStyleBackColor = true;
@@ -161,9 +165,9 @@ namespace SpotlightWallpaper
 		    // 
 		    // button1
 		    // 
-		    this.button1.Location = new System.Drawing.Point(18, 180);
+		    this.button1.Location = new System.Drawing.Point(13, 109);
 		    this.button1.Name = "button1";
-		    this.button1.Size = new System.Drawing.Size(175, 36);
+		    this.button1.Size = new System.Drawing.Size(186, 36);
 		    this.button1.TabIndex = 10;
 		    this.button1.Text = "Bing";
 		    this.button1.UseVisualStyleBackColor = true;
@@ -174,7 +178,7 @@ namespace SpotlightWallpaper
 		    this.TotalImage.ForeColor = System.Drawing.SystemColors.MenuHighlight;
 		    this.TotalImage.Location = new System.Drawing.Point(255, 30);
 		    this.TotalImage.Name = "TotalImage";
-		    this.TotalImage.Size = new System.Drawing.Size(305, 23);
+		    this.TotalImage.Size = new System.Drawing.Size(456, 23);
 		    this.TotalImage.TabIndex = 11;
 		    // 
 		    // Info
@@ -182,53 +186,60 @@ namespace SpotlightWallpaper
 		    this.Info.ForeColor = System.Drawing.Color.Red;
 		    this.Info.Location = new System.Drawing.Point(255, 65);
 		    this.Info.Name = "Info";
-		    this.Info.Size = new System.Drawing.Size(305, 23);
+		    this.Info.Size = new System.Drawing.Size(456, 23);
 		    this.Info.TabIndex = 12;
 		    // 
 		    // button2
 		    // 
-		    this.button2.Location = new System.Drawing.Point(199, 180);
+		    this.button2.Location = new System.Drawing.Point(199, 109);
 		    this.button2.Name = "button2";
 		    this.button2.Size = new System.Drawing.Size(49, 36);
 		    this.button2.TabIndex = 13;
-		    this.button2.Text = "1+";
+		    this.button2.Text = "+";
 		    this.button2.UseVisualStyleBackColor = true;
 		    this.button2.Click += new System.EventHandler(this.button2_Click);
 		    // 
 		    // button3
 		    // 
-		    this.button3.Location = new System.Drawing.Point(199, 93);
+		    this.button3.Location = new System.Drawing.Point(199, 172);
 		    this.button3.Name = "button3";
 		    this.button3.Size = new System.Drawing.Size(49, 37);
 		    this.button3.TabIndex = 14;
-		    this.button3.Text = "10+";
+		    this.button3.Text = "+";
 		    this.button3.UseVisualStyleBackColor = true;
 		    this.button3.Click += new System.EventHandler(this.button3_Click);
 		    // 
 		    // contextMenuStrip1
 		    // 
-		    this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.activeWithStartupWindowsToolStripMenuItem, this.showToolStripMenuItem, this.exitToolStripMenuItem});
+		    this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.activeWithStartupWindowsToolStripMenuItem, this.deAcToolStripMenuItem, this.showToolStripMenuItem, this.exitToolStripMenuItem});
 		    this.contextMenuStrip1.Name = "contextMenuStrip1";
-		    this.contextMenuStrip1.Size = new System.Drawing.Size(227, 70);
+		    this.contextMenuStrip1.Size = new System.Drawing.Size(241, 92);
 		    // 
 		    // activeWithStartupWindowsToolStripMenuItem
 		    // 
 		    this.activeWithStartupWindowsToolStripMenuItem.Name = "activeWithStartupWindowsToolStripMenuItem";
-		    this.activeWithStartupWindowsToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+		    this.activeWithStartupWindowsToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
 		    this.activeWithStartupWindowsToolStripMenuItem.Text = "Active with Startup Windows";
 		    this.activeWithStartupWindowsToolStripMenuItem.Click += new System.EventHandler(this.activeWithStartupWindowsToolStripMenuItem_Click);
+		    // 
+		    // deAcToolStripMenuItem
+		    // 
+		    this.deAcToolStripMenuItem.Name = "deAcToolStripMenuItem";
+		    this.deAcToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+		    this.deAcToolStripMenuItem.Text = "DeActive with Startup Windows";
+		    this.deAcToolStripMenuItem.Click += new System.EventHandler(this.deAcToolStripMenuItem_Click);
 		    // 
 		    // showToolStripMenuItem
 		    // 
 		    this.showToolStripMenuItem.Name = "showToolStripMenuItem";
-		    this.showToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+		    this.showToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
 		    this.showToolStripMenuItem.Text = "Show";
 		    this.showToolStripMenuItem.Click += new System.EventHandler(this.showToolStripMenuItem_Click);
 		    // 
 		    // exitToolStripMenuItem
 		    // 
 		    this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-		    this.exitToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+		    this.exitToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
 		    this.exitToolStripMenuItem.Text = "Exit";
 		    this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 		    // 
@@ -242,9 +253,9 @@ namespace SpotlightWallpaper
 		    // 
 		    // button4
 		    // 
-		    this.button4.Location = new System.Drawing.Point(18, 139);
+		    this.button4.Location = new System.Drawing.Point(13, 237);
 		    this.button4.Name = "button4";
-		    this.button4.Size = new System.Drawing.Size(175, 35);
+		    this.button4.Size = new System.Drawing.Size(186, 35);
 		    this.button4.TabIndex = 15;
 		    this.button4.Text = "UnSplash";
 		    this.button4.UseVisualStyleBackColor = true;
@@ -252,19 +263,46 @@ namespace SpotlightWallpaper
 		    // 
 		    // button5
 		    // 
-		    this.button5.Location = new System.Drawing.Point(199, 139);
+		    this.button5.Location = new System.Drawing.Point(199, 236);
 		    this.button5.Name = "button5";
-		    this.button5.Size = new System.Drawing.Size(49, 35);
+		    this.button5.Size = new System.Drawing.Size(49, 36);
 		    this.button5.TabIndex = 16;
-		    this.button5.Text = "10+";
+		    this.button5.Text = "+";
 		    this.button5.UseVisualStyleBackColor = true;
 		    this.button5.Click += new System.EventHandler(this.addUnSplash_Click);
+		    // 
+		    // label3
+		    // 
+		    this.label3.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+		    this.label3.Location = new System.Drawing.Point(13, 87);
+		    this.label3.Name = "label3";
+		    this.label3.Size = new System.Drawing.Size(230, 19);
+		    this.label3.TabIndex = 17;
+		    // 
+		    // label4
+		    // 
+		    this.label4.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+		    this.label4.Location = new System.Drawing.Point(12, 214);
+		    this.label4.Name = "label4";
+		    this.label4.Size = new System.Drawing.Size(242, 21);
+		    this.label4.TabIndex = 18;
+		    // 
+		    // label5
+		    // 
+		    this.label5.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+		    this.label5.Location = new System.Drawing.Point(13, 148);
+		    this.label5.Name = "label5";
+		    this.label5.Size = new System.Drawing.Size(242, 21);
+		    this.label5.TabIndex = 19;
 		    // 
 		    // Form1
 		    // 
 		    this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
 		    this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		    this.ClientSize = new System.Drawing.Size(1117, 657);
+		    this.Controls.Add(this.label5);
+		    this.Controls.Add(this.label4);
+		    this.Controls.Add(this.label3);
 		    this.Controls.Add(this.button5);
 		    this.Controls.Add(this.button4);
 		    this.Controls.Add(this.button3);
@@ -292,53 +330,36 @@ namespace SpotlightWallpaper
 		    this.PerformLayout();
 	    }
 
-	    private System.Windows.Forms.Button button5;
-
-	    private System.Windows.Forms.Button button4;
-
-	    private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-
 	    private System.Windows.Forms.ToolStripMenuItem activeWithStartupWindowsToolStripMenuItem;
-
-	    private System.Windows.Forms.NotifyIcon notifyIcon1;
-
-	    private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-
-	    private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
-
-	    private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-
-	    private System.Windows.Forms.Button button3;
-
-	    private System.Windows.Forms.Button button2;
-
-	    private System.Windows.Forms.Label Info;
-
-	    private System.Windows.Forms.Label TotalImage;
-
+	    private System.Windows.Forms.Button btnAbout;
 	    private System.Windows.Forms.Button button1;
+	    private System.Windows.Forms.Button button2;
+	    private System.Windows.Forms.Button button3;
+	    private System.Windows.Forms.Button button4;
+	    private System.Windows.Forms.Button button5;
+	    private System.Windows.Forms.Button checkNow;
+	    private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+	    private System.Windows.Forms.ToolStripMenuItem deAcToolStripMenuItem;
+	    private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+	    private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+	    private System.Windows.Forms.ImageList ImageList1;
+	    private System.Windows.Forms.Label Info;
+	    private System.Windows.Forms.Label Label1;
+	    private System.Windows.Forms.Label Label2;
+	    private System.Windows.Forms.Label label3;
+	    private System.Windows.Forms.Label label4;
+	    private System.Windows.Forms.Label label5;
+	    private System.Windows.Forms.ListView ListView1;
+	    private System.Windows.Forms.NotifyIcon notifyIcon1;
+	    private System.Windows.Forms.ContextMenuStrip optionsMenu;
+	    private System.Windows.Forms.PictureBox PictureBox1;
+	    private System.Windows.Forms.ToolStripMenuItem setWallpaper;
+	    private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
+	    private System.Windows.Forms.Label TotalImage;
 
 	    private const int SETDESKWALLPAPER = 20;
 
 	    private const int UPDATEINIFILE = 1;
-
-	    private  Button btnAbout;
-
-	    private  Button checkNow;
-
-	    private ImageList ImageList1;
-
-	    private  Label Label1;
-
-	    private  Label Label2;
-
-	    private ListView ListView1;
-
-	    private System.Windows.Forms.ContextMenuStrip optionsMenu;
-
-	    private  PictureBox PictureBox1;
-
-	    private ToolStripMenuItem setWallpaper;
 
 	    #endregion
 	   

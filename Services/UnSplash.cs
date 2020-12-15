@@ -4,16 +4,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SpotlightWallpaper.Services
 {
     public class UnSplash
     {
-        public UnSplash()
-        {
-        }
-
+        
         /// <summary>
         /// url to anspash
         /// </summary>
@@ -41,7 +41,7 @@ namespace SpotlightWallpaper.Services
         public enum Categories : int
         {
             Random = -1,
-            Nature = 0,
+            People = 0,
             Wallpapers = 1
         }
 
@@ -50,74 +50,10 @@ namespace SpotlightWallpaper.Services
         /// </summary>
         public static Categories Category = Categories.Random;
 
-        /// <summary>
-        /// get the current image fileinfo
-        /// </summary>
-        /// <returns>image fileinfo</returns>
-        public FileInfo Current()
-        {
-            return current;
-        }
 
-        public static async Task<List<FileInfo>> GetUnSplashImages()
-        {
-            var fileInfoes = new List<FileInfo>();
-            var listUris = new List<string>();
-            for (int i = 0; i < 9; i++)
-            {
-                if (Directory.Exists(localPath))
-                {
-                    // build url
-                    string category = string.Empty;
-
-                    if (Category == Categories.Random)
-                    {
-                        // random image category
-                        Category = (Categories) random.Next(0, 1);
-                    }
-
-                    switch (Category)
-                    {
-                        case Categories.Wallpapers:
-                            category = "wallpapers";
-                            break;
-                        case Categories.Nature:
-                            category = "nature";
-                            break;
-                    }
-
-                    string url = string.Format(
-                        "{0}/category/{1}/{2}x{3}",
-                        UNSPLASH_URL,
-                        category, 1920, 1080);
-                    if (!string.IsNullOrWhiteSpace(url))
-                        listUris.Add(url);
-                }
-            }
-
-            if (listUris.Any())
-            {
-                foreach (var url in listUris)
-                {
-                    string filename = await downloadImage(new Uri(url));
-                    if (File.Exists(filename))
-                    {
-                        current = new FileInfo(filename);
-                        fileInfoes.Add(current);
-                    }
-                }
-            }
-
-            return fileInfoes;
-
-
-            fileInfoes = null;
-            return null;
-        }
 
         public static async Task<FileInfo> GetUnSplashImage()
         {
-            var listUris = new List<string>();
 
             if (Directory.Exists(localPath))
             {
@@ -128,14 +64,13 @@ namespace SpotlightWallpaper.Services
                 var rd = random.Next(0, 2);
                 Category = (Categories) rd;
 
-
                 switch (Category)
                 {
                     case Categories.Wallpapers:
                         category = "wallpapers";
                         break;
-                    case Categories.Nature:
-                        category = "nature";
+                    case Categories.People:
+                        category = "people";
                         break;
                 }
 
@@ -164,6 +99,22 @@ namespace SpotlightWallpaper.Services
         /// <returns>returns true if download success</returns>
         private static async Task<string> downloadImage(Uri uri)
         {
+            
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    string response = await client.GetStringAsync(uri);
+
+                    var jsonObj = (JObject)JsonConvert.DeserializeObject(response);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception();
+                }
+                   
+            }
+            
             using (var client = new WebClient())
             {
                 try
@@ -189,3 +140,4 @@ namespace SpotlightWallpaper.Services
         #endregion
     }
 }
+
