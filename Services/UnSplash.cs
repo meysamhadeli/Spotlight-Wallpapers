@@ -100,20 +100,17 @@ namespace SpotlightWallpaper.Services
         private static async Task<string> downloadImage(Uri uri)
         {
             
-            using (HttpClient client = new HttpClient())
-            {
+           
                 try
                 {
-                    string response = await client.GetStringAsync(uri);
-
-                    var jsonObj = (JObject)JsonConvert.DeserializeObject(response);
+                    var response = await SpotlightApi.GetBatchResponseAsync();
                 }
                 catch (Exception e)
                 {
                     throw new Exception();
                 }
-                   
-            }
+                
+            
             
             using (var client = new WebClient())
             {

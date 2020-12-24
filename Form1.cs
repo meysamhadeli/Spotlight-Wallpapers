@@ -143,17 +143,14 @@ namespace SpotlightWallpaper
 
                     if (newImageNames != null)
                     {
-                        ++downloadImageNum;
-                        label4.Text = $"downloading image unsplash... {downloadImageNum}";
+                        label4.Text = string.Empty;
                     }
                     else
                     {
                         this.Info.Text = "No response was received from the server unsplash";
+                        label4.Text = string.Empty;
                     }
                 
-                label4.Text = $"downloading image unsplash... {downloadImageNum}";
-                await Task.Delay(1000);
-                label4.Text = String.Empty;
                 await initUnSplash();
             }
             catch (Exception e)
@@ -249,11 +246,9 @@ namespace SpotlightWallpaper
 
                     if (imageName != null)
                     {
-                        ++downloadImageNum;
-                        label5.Text = $"downloading image spotlight... {downloadImageNum}";
+                        label5.Text = string.Empty;
                     }
                 
-                label5.Text = $"downloading image spotlight... {downloadImageNum}";
                 await Task.Delay(1000);
                 label5.Text = String.Empty;
                 await initSpotlight();
@@ -261,6 +256,7 @@ namespace SpotlightWallpaper
             catch (Exception e)
             {
                 this.Info.Text = "No response was received from the server spotlight";
+                label5.Text = string.Empty;
             }
         }
 
@@ -274,8 +270,8 @@ namespace SpotlightWallpaper
         {
             this.ShowInTaskbar = false;
             this.WindowState = FormWindowState.Minimized;
-            notifyIcon1.ShowBalloonTip(1000, "Spotlight Wallpapers", "Spotlight Wallpapers is running minimized to try." +'\n'+
-                                                                     "to exit right click this icon and select exit.", ToolTipIcon.Info);
+            notifyIcon1.ShowBalloonTip(1000, "Spotlight Wallpapers", "App is running minimized to try." +'\n'+
+                                                                     "to exit right click and select exit.", ToolTipIcon.Info);
             await this.initBing();
             
         }
@@ -356,11 +352,10 @@ namespace SpotlightWallpaper
 
                 if (newImageName != null)
                 {
-                    ++downloadImageNum;
                     label3.Text = $"downloading image bing... {downloadImageNum}";
                     await Task.Delay(1000);
+                    label3.Text = string.Empty;
                 }
-                label3.Text = $"downloading image bing... {downloadImageNum}";
                 await Task.Delay(1000);
                 label3.Text = String.Empty;
                 await initBing();
@@ -368,6 +363,7 @@ namespace SpotlightWallpaper
             catch (Exception e)
             {
                 this.Info.Text = "No response was received from the server bing";
+                label3.Text = string.Empty;
             }
         }
 
