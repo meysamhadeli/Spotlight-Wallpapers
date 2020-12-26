@@ -1,6 +1,6 @@
 # Spotlight-Wallpapers-Changer
 This project is for downloading Spotlight, Bing and Unsplash wallpapers.
-![](Images/previewImage.jpg)
+![](Images/previewimg.jpg)
 
 ## Show your support
 ----------------
