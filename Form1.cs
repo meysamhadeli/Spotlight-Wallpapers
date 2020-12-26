@@ -71,7 +71,7 @@ namespace SpotlightWallpaper
             this.ImageList1.Images.Clear();
             this.ListView1.Items.Clear();
             string pathSmallImage = null;
-            FileInfo[] files = null;
+            List<FileInfo> files = new List<FileInfo>();
             unSplashNum = 0;
             this.Info.Text = null;
             try
@@ -86,11 +86,11 @@ namespace SpotlightWallpaper
                     Directory.CreateDirectory(patch);
                 }
 
-                files = directoryInfo.GetFiles();
-                if (files.Length > 0)
+                files = directoryInfo.GetFiles().OrderByDescending(f => f.LastWriteTime).ToList();
+                if (files.Any())
                 {
-                    FileInfo[] fileInfoArray = files;
-                    for (int i = 0; i < checked((int) fileInfoArray.Length); i = checked(i + 1))
+                    List<FileInfo> fileInfoArray = files;
+                    for (int i = 0; i < checked(fileInfoArray.Count()); i = checked(i + 1))
                     {
                         FileInfo fileInfo = fileInfoArray[i];
                         try
@@ -178,7 +178,7 @@ namespace SpotlightWallpaper
             this.ImageList1.Images.Clear();
             this.ListView1.Items.Clear();
             string pathSmallImage = null;
-            FileInfo[] files = null;
+            List<FileInfo> files = new List<FileInfo>();
             num = 0;
             this.Info.Text = null;
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
@@ -191,11 +191,11 @@ namespace SpotlightWallpaper
                 Directory.CreateDirectory(patch);
             }
 
-            files = directoryInfo.GetFiles();
-            if (files.Length > 0)
+            files  = directoryInfo.GetFiles().OrderByDescending(f => f.LastWriteTime).ToList();
+            if (files.Any())
             {
-                FileInfo[] fileInfoArray = files;
-                for (int i = 0; i < checked((int) fileInfoArray.Length); i = checked(i + 1))
+                List<FileInfo> fileInfoArray = files;
+                for (int i = 0; i < checked(fileInfoArray.Count()); i = checked(i + 1))
                 {
                     FileInfo fileInfo = fileInfoArray[i];
                     try
@@ -378,19 +378,26 @@ namespace SpotlightWallpaper
             string pathSmallImage = null;
             bingNum = 0;
 
-            FileInfo[] files = null;
+            List<FileInfo> files = new List<FileInfo>();
             List<string> ext = new List<string> {".jpg", ".jpeg"};
 
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
+            
+
+            if (!Directory.Exists(patch))
+            {
+                Directory.CreateDirectory(patch);
+            }
+            
 
             files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
                 .Where(path => ext.Contains(Path.GetExtension(path.Name)))
-                .Select(x => new FileInfo(x.FullName)).ToArray();
+                .Select(x => new FileInfo(x.FullName)).OrderByDescending(f => f.LastWriteTime).ToList();
 
-            if (files.Length > 0)
+            if (files.Any())
             {
-                FileInfo[] fileInfoArray = files;
-                for (int i = 0; i < checked((int) fileInfoArray.Length); i = checked(i + 1))
+                List<FileInfo> fileInfoArray = files;
+                for (int i = 0; i < checked(fileInfoArray.Count()); i = checked(i + 1))
                 {
                     FileInfo fileInfo = fileInfoArray[i];
                     try

@@ -58,7 +58,6 @@ namespace SpotlightWallpaper.Services
 
             using (var client = new HttpClient())
             {
-                string responseUrl = batchQuery.ToString();
                 var responseMsg =
                     await client.GetAsync("https://arc.msn.com/v3/Delivery/Placement?" + batchQuery.ToString());
                 if(responseMsg.StatusCode !=HttpStatusCode.OK)

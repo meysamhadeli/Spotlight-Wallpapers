@@ -31,7 +31,7 @@ namespace SpotlightWallpaper.Services
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
             var files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
                 .Where(path => ext.Contains(Path.GetExtension(path.Name)))
-                .Select(x => new FileInfo(x.FullName)).ToArray();
+                .Select(x => new FileInfo(x.FullName)).OrderByDescending(f => f.LastWriteTime).ToList();
 
             if (!Directory.Exists(exPath))
             {
