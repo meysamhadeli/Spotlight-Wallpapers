@@ -272,8 +272,6 @@ namespace SpotlightWallpaper
             this.WindowState = FormWindowState.Minimized;
             notifyIcon1.ShowBalloonTip(1000, "Spotlight Wallpapers", "App is running minimized to try." +'\n'+
                                                                      "to exit right click and select exit.", ToolTipIcon.Info);
-            await this.initBing();
-            
         }
 
 
@@ -463,11 +461,12 @@ namespace SpotlightWallpaper
             }
         }
 
-        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        private async void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             // TopMost = true;
             this.Show();
             this.WindowState = FormWindowState.Normal;
+            await this.initBing();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)

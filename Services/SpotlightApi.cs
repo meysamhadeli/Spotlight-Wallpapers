@@ -20,7 +20,6 @@ namespace SpotlightWallpaper.Services
         {
             FileInfo[] files = null;
             var reciveNewWallpapers = new List<string>();
-            var ext = new List<string> {".jpg", ".jpeg"};
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
 
             for (int j = 0; j < 3; j++)
@@ -34,11 +33,7 @@ namespace SpotlightWallpaper.Services
                     reciveNewWallpapers.Add($"{patch}\\{iName}.jpg");
                 }
             }
-            if (reciveNewWallpapers.Any())
-            {
-                await Win32.SetWallpaper(reciveNewWallpapers.LastOrDefault());
-            }
-            return reciveNewWallpapers.LastOrDefault();
+            return reciveNewWallpapers?.LastOrDefault();
         }
 
         /// <summary>
@@ -60,7 +55,7 @@ namespace SpotlightWallpaper.Services
             {
                 var responseMsg =
                     await client.GetAsync("https://arc.msn.com/v3/Delivery/Placement?" + batchQuery.ToString());
-                if(responseMsg.StatusCode !=HttpStatusCode.OK)
+                if (responseMsg.StatusCode != HttpStatusCode.OK)
                     throw new Exception();
                 return await responseMsg.Content.ReadAsStringAsync();
             }

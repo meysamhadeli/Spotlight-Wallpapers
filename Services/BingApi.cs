@@ -10,7 +10,7 @@ namespace SpotlightWallpaper.Services
 {
     public class BingApi
     {
-        public static async Task<string> GetBingImage(string existImage = null)
+        public static async Task<string> GetBingImage()
         {
             var client = new RestClient("http://www.bing.com/");
             var request = new RestRequest("HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US", Method.GET);
@@ -45,8 +45,7 @@ namespace SpotlightWallpaper.Services
             }
 
             await Task.Run(() => { File.WriteAllBytes(ImageSavePath, imageBytes); });
-            if (string.IsNullOrWhiteSpace(existImage))
-                await Win32.SetWallpaper(ImageSavePath);
+          
             return ImageSavePath;
         }
     }
