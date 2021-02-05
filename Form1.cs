@@ -48,6 +48,7 @@ namespace SpotlightWallpaper
             }
             
             InitializeComponent();
+            button1.Select();
             if (!killProcess)
             {
                 JobManager.Initialize(new MyRegistry());
@@ -135,8 +136,7 @@ namespace SpotlightWallpaper
             label4.Text = $"downloading...";
             checkApi = CheckApi.UnSplash;
             this.Info.Text = string.Empty;
-            int downloadImageNum = 0;
-
+            
             try
             {
                 var newImageNames = await UnSplash.GetUnSplashImage();
@@ -350,7 +350,6 @@ namespace SpotlightWallpaper
 
                 if (newImageName != null)
                 {
-                    label3.Text = $"downloading image bing... {downloadImageNum}";
                     await Task.Delay(1000);
                     label3.Text = string.Empty;
                 }
