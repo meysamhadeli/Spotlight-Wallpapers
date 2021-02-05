@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentScheduler;
 using SpotlightWallpaper.Services;
 using System.Linq;
+using Topshelf.Builders;
 
 namespace SpotlightWallpaper.Jobs
 {
@@ -30,8 +32,9 @@ namespace SpotlightWallpaper.Jobs
                     }
                 });
             });
-            
-            this.Schedule(someMethod).ToRunNow().AndEvery(1).Days();
+
+
+            Schedule(someMethod).ToRunNow().AndEvery(1).Days();
         }
 
         private async Task SetWall(string path)

@@ -18,13 +18,12 @@ namespace SpotlightWallpaper.Services
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception();
             string imageUrl = response.Data["images"][0]["url"];
-            var shs = response.Data["images"][0]["hsh"];
             var imageRequest = new RestRequest(imageUrl, Method.GET);
             Byte[] imageBytes = null;
 
             await Task.Run(() => { imageBytes = client.DownloadData(imageRequest); });
 
-            string ImageSavePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing\{shs}.jpg";
+            string ImageSavePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing\{DateTime.Now:yyyy-MM-dd}.jpg";
             string exPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
 
             List<string> ext = new List<string> {".jpg", ".jpeg"};
@@ -39,7 +38,7 @@ namespace SpotlightWallpaper.Services
             }
 
             var names = files.Select(x => x.Name).ToList();
-            if (names.Contains($"{shs}.jpg"))
+            if (names.Contains($"{DateTime.Now:yyyy-MM-dd}.jpg"))
             {
                 return null;
             }
