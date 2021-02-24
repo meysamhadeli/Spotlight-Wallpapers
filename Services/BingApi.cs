@@ -1,15 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using RestSharp;
+using RestSharp.Deserializers;
 
 namespace SpotlightWallpaper.Services
 {
-    public class BingApi
+    internal class BingApi
     {
+        public const string Url = "https://www.bing.com";
+        
+        private static RestClient _restClient;
+
+        public BingApi()
+        {
+            _restClient = new RestClient(Url);
+        }
+
         public static async Task<string> GetBingImage()
         {
             var client = new RestClient("http://www.bing.com/");
@@ -17,13 +34,14 @@ namespace SpotlightWallpaper.Services
             var response = await client.ExecuteAsync<dynamic>(request);
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception();
+            string imageName = (response.Data["images"][0]["title"] + ".jpg");
             string imageUrl = response.Data["images"][0]["url"];
             var imageRequest = new RestRequest(imageUrl, Method.GET);
             Byte[] imageBytes = null;
 
             await Task.Run(() => { imageBytes = client.DownloadData(imageRequest); });
 
-            string ImageSavePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing\{DateTime.Now:yyyy-MM-dd}.jpg";
+            string ImageSavePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing\{imageName?.Replace(" ",".")}";
             string exPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
 
             List<string> ext = new List<string> {".jpg", ".jpeg"};
@@ -38,14 +56,23 @@ namespace SpotlightWallpaper.Services
             }
 
             var names = files.Select(x => x.Name).ToList();
-            if (names.Contains($"{DateTime.Now:yyyy-MM-dd}.jpg"))
+            if (names.Contains(imageName?.Replace(" ",".")))
             {
                 return null;
             }
 
-            await Task.Run(() => { File.WriteAllBytes(ImageSavePath, imageBytes); });
+            try
+            {
+                await Task.Run(() => { File.WriteAllBytes(ImageSavePath, imageBytes); });
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
           
             return ImageSavePath;
         }
+
     }
 }
+

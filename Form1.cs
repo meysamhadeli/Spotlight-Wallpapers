@@ -16,6 +16,7 @@ using SpotlightWallpaper.Enum;
 using SpotlightWallpaper.Jobs;
 using SpotlightWallpaper.Services;
 using SpotlightWallpaper.Settings;
+using Image = System.Drawing.Image;
 using Registry = Microsoft.Win32.Registry;
 
 namespace SpotlightWallpaper
@@ -240,9 +241,7 @@ namespace SpotlightWallpaper
             try
             {
              
-                    var response = await SpotlightApi.GetBatchResponseAsync();
-                    var images = await SpotlightApi.GetImageInfo(response);
-                    var imageName = await SpotlightApi.WriteImage(images.Landscape.Url);
+                    var imageName = await SpotlightApi.GetSpotlightImage();
 
                     if (imageName != null)
                     {
@@ -334,7 +333,7 @@ namespace SpotlightWallpaper
 
         public async Task<string> GetBingImage()
         {
-            return await BingApi.GetBingImage();
+             return await BingApi.GetBingImage();
         }
 
         private async Task getwallzBing()

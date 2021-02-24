@@ -25,7 +25,7 @@ namespace SpotlightWallpaper.Jobs
                         await Task.Delay(10000);
                         await SetWall(spotlightImage);
                     }
-                    else
+                    else if (bingImage != null)
                     {
                         await Task.Delay(10000);
                         await SetWall(bingImage);
@@ -42,5 +42,8 @@ namespace SpotlightWallpaper.Jobs
             if (!string.IsNullOrWhiteSpace(path))
                 await Win32.SetWallpaper(path);
         }
+
+
     }
+
 }

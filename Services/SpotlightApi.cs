@@ -18,22 +18,20 @@ namespace SpotlightWallpaper.Services
     {
         public static async Task<string> GetSpotlightImage()
         {
-            FileInfo[] files = null;
-            var reciveNewWallpapers = new List<string>();
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
+            List<string> ext = new List<string> {".jpg", ".jpeg"};
 
-            for (int j = 0; j < 3; j++)
-            {
                 var response = await GetBatchResponseAsync();
                 var images = await GetImageInfo(response);
-                var iName = await WriteImage(images.Landscape.Url);
-
-                if (iName != null)
-                {
-                    reciveNewWallpapers.Add($"{patch}\\{iName}.jpg");
-                }
-            }
-            return reciveNewWallpapers?.LastOrDefault();
+                var files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
+                    .Where(path => ext.Contains(Path.GetExtension(path.Name)))
+                    .Select(x => new FileInfo(x.FullName)).OrderByDescending(f => f.LastWriteTime).ToList();
+                
+                var iName = await WriteImage(images.Landscape.Url, files);
+                if (iName == null)
+                    return null;
+                var saveName =  $"{patch}\\{iName}.jpg";
+                return saveName;
         }
 
         /// <summary>
@@ -87,10 +85,17 @@ namespace SpotlightWallpaper.Services
         /// </summary>
         /// <param name="imageUrl">Image URL to download.</param>
         /// <returns>The file name of the downloaded image.</returns>
-        public static async Task<string> WriteImage(string imageUrl)
+        public static async Task<string> WriteImage(string imageUrl, List<FileInfo> files)
         {
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
             string imageName = imageUrl.Split('/').Last().Split('?')[0];
+            
+            var names = files.Select(x => x.Name).ToList();
+            if (names.Contains($"{imageName}.jpg"))
+            {
+                return null;
+            }
+            
             using (var client = new HttpClient())
             {
                 var imageResponse = await client.GetAsync(imageUrl);
@@ -134,7 +139,7 @@ namespace SpotlightWallpaper.Services
             [JsonProperty("sha256")] public string Sha256 { get; set; }
             [JsonProperty("u")] public string Url { get; set; }
         }
-
+        
         #endregion
     }
 }
