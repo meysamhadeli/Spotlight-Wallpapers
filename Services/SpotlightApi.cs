@@ -24,9 +24,9 @@ namespace SpotlightWallpaper.Services
 
             var response = await GetBatchResponseAsync();
             var deserializeRoot = JsonConvert.DeserializeObject<Root>(response);
-            if (deserializeRoot.batchrsp.errors.Any())
-                return null;
-
+            if (deserializeRoot.batchrsp?.errors != null)
+                throw new Exception();
+            
             var images = await GetImageInfo(response);
             var files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
                 .Where(path => ext.Contains(Path.GetExtension(path.Name)))
