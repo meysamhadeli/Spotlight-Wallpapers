@@ -13,7 +13,6 @@ namespace SpotlightWallpaper.Services
 {
     public class UnSplash
     {
-        
         /// <summary>
         /// url to anspash
         /// </summary>
@@ -51,16 +50,14 @@ namespace SpotlightWallpaper.Services
         public static Categories Category = Categories.Random;
 
 
-
         public static async Task<FileInfo> GetUnSplashImage()
         {
-
             if (Directory.Exists(localPath))
             {
                 // build url
                 string category = string.Empty;
                 Category = Categories.Random;
-                
+
                 var rd = random.Next(0, 2);
                 Category = (Categories) rd;
 
@@ -99,19 +96,16 @@ namespace SpotlightWallpaper.Services
         /// <returns>returns true if download success</returns>
         private static async Task<string> downloadImage(Uri uri)
         {
-            
-           
-                try
-                {
-                    var response = await SpotlightApi.GetBatchResponseAsync();
-                }
-                catch (Exception e)
-                {
-                    throw new Exception();
-                }
-                
-            
-            
+            try
+            {
+                var response = await SpotlightApi.GetBatchResponseAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception();
+            }
+
+
             using (var client = new WebClient())
             {
                 try
@@ -137,4 +131,3 @@ namespace SpotlightWallpaper.Services
         #endregion
     }
 }
-

@@ -42,18 +42,18 @@ namespace SpotlightWallpaper.Services
             await Task.Run(() => { imageBytes = client.DownloadData(imageRequest); });
 
             string ImageSavePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing\{imageName?.Replace(" ",".")}";
-            string exPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
 
             List<string> ext = new List<string> {".jpg", ".jpeg"};
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
+            
+            if (!Directory.Exists(patch))
+            {
+                Directory.CreateDirectory(patch);
+            }
+            
             var files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
                 .Where(path => ext.Contains(Path.GetExtension(path.Name)))
                 .Select(x => new FileInfo(x.FullName)).OrderByDescending(f => f.LastWriteTime).ToList();
-
-            if (!Directory.Exists(exPath))
-            {
-                Directory.CreateDirectory(exPath);
-            }
 
             var names = files.Select(x => x.Name).ToList();
             if (names.Contains(imageName?.Replace(" ",".")))
@@ -63,7 +63,12 @@ namespace SpotlightWallpaper.Services
 
             try
             {
-                await Task.Run(() => { File.WriteAllBytes(ImageSavePath, imageBytes); });
+                using (FileStream sourceStream = new FileStream(ImageSavePath,
+                    FileMode.Append, FileAccess.Write, FileShare.None,
+                    bufferSize: 4096, useAsync: true))
+                {
+                    await sourceStream.WriteAsync(imageBytes,0, imageBytes.Length);
+                };
             }
             catch (Exception e)
             {
@@ -75,4 +80,3 @@ namespace SpotlightWallpaper.Services
 
     }
 }
-

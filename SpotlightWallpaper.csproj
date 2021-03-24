@@ -246,6 +246,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enum\CheckApi.cs" />
+    <Compile Include="CustomException\Batchrsp.cs" />
+    <Compile Include="CustomException\Error.cs" />
+    <Compile Include="CustomException\Root.cs" />
     <Compile Include="Jobs\MyRegistry.cs" />
     <Compile Include="Services\BingApi.cs" />
     <Compile Include="Form1.Designer.cs" />

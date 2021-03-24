@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SpotlightWallpaper.CustomException;
 using SpotlightWallpaper.My;
 using SpotlightWallpaper.Settings;
 
@@ -21,17 +22,21 @@ namespace SpotlightWallpaper.Services
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
             List<string> ext = new List<string> {".jpg", ".jpeg"};
 
-                var response = await GetBatchResponseAsync();
-                var images = await GetImageInfo(response);
-                var files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
-                    .Where(path => ext.Contains(Path.GetExtension(path.Name)))
-                    .Select(x => new FileInfo(x.FullName)).OrderByDescending(f => f.LastWriteTime).ToList();
-                
-                var iName = await WriteImage(images.Landscape.Url, files);
-                if (iName == null)
-                    return null;
-                var saveName =  $"{patch}\\{iName}.jpg";
-                return saveName;
+            var response = await GetBatchResponseAsync();
+            var deserializeRoot = JsonConvert.DeserializeObject<Root>(response);
+            if (deserializeRoot.batchrsp.errors.Any())
+                return null;
+
+            var images = await GetImageInfo(response);
+            var files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
+                .Where(path => ext.Contains(Path.GetExtension(path.Name)))
+                .Select(x => new FileInfo(x.FullName)).OrderByDescending(f => f.LastWriteTime).ToList();
+
+            var iName = await WriteImage(images.Landscape.Url, files);
+            if (iName == null)
+                return null;
+            var saveName = $"{patch}\\{iName}.jpg";
+            return saveName;
         }
 
         /// <summary>
@@ -89,23 +94,28 @@ namespace SpotlightWallpaper.Services
         {
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
             string imageName = imageUrl.Split('/').Last().Split('?')[0];
-            
+
             var names = files.Select(x => x.Name).ToList();
             if (names.Contains($"{imageName}.jpg"))
             {
                 return null;
             }
-            
+
             using (var client = new HttpClient())
             {
                 var imageResponse = await client.GetAsync(imageUrl);
-                await Task.Run(async () =>
+
+                using (FileStream sourceStream = new FileStream($"{patch}/{imageName}.jpg",
+                    FileMode.Append, FileAccess.Write, FileShare.None,
+                    bufferSize: 4096, useAsync: true))
                 {
-                    System.IO.File.WriteAllBytes(
-                        $"{patch}/{imageName}.jpg",
-                        await imageResponse.Content.ReadAsByteArrayAsync());
-                });
+                    var content = await imageResponse.Content.ReadAsByteArrayAsync();
+                    await sourceStream.WriteAsync(content, 0, content.Length);
+                }
+
+                ;
             }
+
 
             return imageName;
         }
@@ -139,7 +149,7 @@ namespace SpotlightWallpaper.Services
             [JsonProperty("sha256")] public string Sha256 { get; set; }
             [JsonProperty("u")] public string Url { get; set; }
         }
-        
+
         #endregion
     }
 }

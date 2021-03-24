@@ -20,21 +20,25 @@ namespace SpotlightWallpaper.Jobs
                 {
                     var spotlightImage = await SpotlightApi.GetSpotlightImage();
                     var bingImage = await BingApi.GetBingImage();
-                    if (!string.IsNullOrWhiteSpace(spotlightImage))
-                    {
-                        await Task.Delay(10000);
-                        await SetWall(spotlightImage);
-                    }
-                    else if (bingImage != null)
-                    {
-                        await Task.Delay(10000);
-                        await SetWall(bingImage);
-                    }
+                    await SetWallpapers(spotlightImage, bingImage);
                 });
             });
-
-
+            
             Schedule(someMethod).ToRunNow().AndEvery(1).Days();
+        }
+
+        private async Task SetWallpapers(string spotlightImage, string bingImage)
+        {
+            if (!string.IsNullOrWhiteSpace(spotlightImage))
+            {
+                await Task.Delay(10000);
+                await SetWall(spotlightImage);
+            }
+            else if (bingImage != null)
+            {
+                await Task.Delay(10000);
+                await SetWall(bingImage);
+            }
         }
 
         private async Task SetWall(string path)
