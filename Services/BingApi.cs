@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -29,12 +30,13 @@ namespace SpotlightWallpaper.Services
 
         public static async Task<string> GetBingImage()
         {
-            var client = new RestClient("https://www.bing.com/");
-            var request = new RestRequest("HPImageArchive.aspx?format=js&idx=0&n=1", Method.GET);
+            var client = new RestClient("https://cn.bing.com/");
+            var request = new RestRequest("HPImageArchive.aspx?idx=0&n=1&format=js", Method.GET);
             var response = await client.ExecuteAsync<dynamic>(request);
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception();
             string imageName = (response.Data["images"][0]["title"] + ".jpg");
+            imageName = CheckIlligalCharacter(imageName);
             string imageUrl = response.Data["images"][0]["url"];
             var imageRequest = new RestRequest(imageUrl, Method.GET);
             Byte[] imageBytes = null;
@@ -77,6 +79,12 @@ namespace SpotlightWallpaper.Services
           
             return ImageSavePath;
         }
-
+        
+        private static string CheckIlligalCharacter (string strIn)
+        {
+            var regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+            var r = new Regex(string.Format("[{0}]", Regex.Escape(regexSearch)));
+            return r.Replace(strIn,"");
+        }
     }
 }
