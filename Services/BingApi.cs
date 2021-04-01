@@ -29,8 +29,8 @@ namespace SpotlightWallpaper.Services
 
         public static async Task<string> GetBingImage()
         {
-            var client = new RestClient("http://www.bing.com/");
-            var request = new RestRequest("HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US", Method.GET);
+            var client = new RestClient("https://www.bing.com/");
+            var request = new RestRequest("HPImageArchive.aspx?format=js&idx=0&n=1", Method.GET);
             var response = await client.ExecuteAsync<dynamic>(request);
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception();

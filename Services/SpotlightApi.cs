@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SpotlightWallpaper.CustomException;
@@ -45,19 +47,27 @@ namespace SpotlightWallpaper.Services
         /// <returns>A JSON object containing another JSON object which contains image info.</returns>
         public static async Task<string> GetBatchResponseAsync()
         {
-            var batchQuery = HttpUtility.ParseQueryString(String.Empty);
-            batchQuery["pid"] = "338387";
-            batchQuery["fmt"] = "json";
-            batchQuery["cfmt"] = "poly";
-            batchQuery["sft"] = "jpeg";
-            batchQuery["ctry"] = "us";
-            batchQuery["pl"] = "en-US";
-            batchQuery["cdm"] = "1";
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+            RegionInfo currentRegion = new RegionInfo(currentCulture.LCID);
+            string region = currentRegion.TwoLetterISORegionName.ToLower();
+
+                var locale = currentCulture.Name;
+                if (locale.Length > 2 && locale.Contains("-"))
+                region = locale.Split('-')[1].ToLower();
+                
+            string request = String.Format(
+                "https://arc.msn.com/v3/Delivery/Placement?pid=338387&fmt=json&ua=WindowsShellClient"
+                + "%2F0&cdm=1&pl={0}&lc={1}&ctry={2}&time={3}",
+                locale,
+                locale,
+                region,
+                DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ")
+            );
 
             using (var client = new HttpClient())
             {
                 var responseMsg =
-                    await client.GetAsync("https://arc.msn.com/v3/Delivery/Placement?" + batchQuery.ToString());
+                    await client.GetAsync(request);
                 if (responseMsg.StatusCode != HttpStatusCode.OK)
                     throw new Exception();
                 return await responseMsg.Content.ReadAsStringAsync();

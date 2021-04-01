@@ -24,7 +24,7 @@ namespace SpotlightWallpaper.Jobs
                 });
             });
             
-            Schedule(someMethod).ToRunNow().AndEvery(1).Days();
+            Schedule(someMethod).ToRunNow().AndEvery(3).Days();
         }
 
         private async Task SetWallpapers(string spotlightImage, string bingImage)
