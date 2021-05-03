@@ -60,8 +60,6 @@ namespace SpotlightWallpaper
 		    this.button2 = new System.Windows.Forms.Button();
 		    this.button3 = new System.Windows.Forms.Button();
 		    this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-		    this.activeWithStartupWindowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-		    this.deAcToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 		    this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 		    this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 		    this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -211,35 +209,21 @@ namespace SpotlightWallpaper
 		    // 
 		    // contextMenuStrip1
 		    // 
-		    this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.activeWithStartupWindowsToolStripMenuItem, this.deAcToolStripMenuItem, this.showToolStripMenuItem, this.exitToolStripMenuItem});
+		    this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.showToolStripMenuItem, this.exitToolStripMenuItem});
 		    this.contextMenuStrip1.Name = "contextMenuStrip1";
-		    this.contextMenuStrip1.Size = new System.Drawing.Size(241, 92);
-		    // 
-		    // activeWithStartupWindowsToolStripMenuItem
-		    // 
-		    this.activeWithStartupWindowsToolStripMenuItem.Name = "activeWithStartupWindowsToolStripMenuItem";
-		    this.activeWithStartupWindowsToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-		    this.activeWithStartupWindowsToolStripMenuItem.Text = "Active with Startup Windows";
-		    this.activeWithStartupWindowsToolStripMenuItem.Click += new System.EventHandler(this.activeWithStartupWindowsToolStripMenuItem_Click);
-		    // 
-		    // deAcToolStripMenuItem
-		    // 
-		    this.deAcToolStripMenuItem.Name = "deAcToolStripMenuItem";
-		    this.deAcToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-		    this.deAcToolStripMenuItem.Text = "DeActive with Startup Windows";
-		    this.deAcToolStripMenuItem.Click += new System.EventHandler(this.deAcToolStripMenuItem_Click);
+		    this.contextMenuStrip1.Size = new System.Drawing.Size(104, 48);
 		    // 
 		    // showToolStripMenuItem
 		    // 
 		    this.showToolStripMenuItem.Name = "showToolStripMenuItem";
-		    this.showToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+		    this.showToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
 		    this.showToolStripMenuItem.Text = "Show";
 		    this.showToolStripMenuItem.Click += new System.EventHandler(this.showToolStripMenuItem_Click);
 		    // 
 		    // exitToolStripMenuItem
 		    // 
 		    this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-		    this.exitToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+		    this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
 		    this.exitToolStripMenuItem.Text = "Exit";
 		    this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 		    // 
@@ -330,7 +314,6 @@ namespace SpotlightWallpaper
 		    this.PerformLayout();
 	    }
 
-	    private System.Windows.Forms.ToolStripMenuItem activeWithStartupWindowsToolStripMenuItem;
 	    private System.Windows.Forms.Button btnAbout;
 	    private System.Windows.Forms.Button button1;
 	    private System.Windows.Forms.Button button2;
@@ -339,7 +322,6 @@ namespace SpotlightWallpaper
 	    private System.Windows.Forms.Button button5;
 	    private System.Windows.Forms.Button checkNow;
 	    private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-	    private System.Windows.Forms.ToolStripMenuItem deAcToolStripMenuItem;
 	    private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
 	    private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 	    private System.Windows.Forms.ImageList ImageList1;

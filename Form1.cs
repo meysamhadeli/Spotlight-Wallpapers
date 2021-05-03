@@ -52,6 +52,7 @@ namespace SpotlightWallpaper
             button1.Select();
             if (!killProcess)
             {
+                SetDefaultStartAppWithStartUpWindows();
                 JobManager.Initialize(new MyRegistry());
             }
         }
@@ -352,6 +353,12 @@ namespace SpotlightWallpaper
                     await Task.Delay(1000);
                     label3.Text = string.Empty;
                 }
+                else
+                {
+                    this.Info.Text = "Bing's wallpapers are updated";
+                    label3.Text = string.Empty;
+                    return;
+                }
                 await Task.Delay(1000);
                 label3.Text = String.Empty;
                 await initBing();
@@ -444,6 +451,7 @@ namespace SpotlightWallpaper
         private void showToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Show();
+            this.WindowState = FormWindowState.Normal;
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -475,14 +483,7 @@ namespace SpotlightWallpaper
                 this.WindowState = FormWindowState.Minimized;
             }
         }
-
-
-        private void activeWithStartupWindowsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            reg.SetValue("SpotlightWallpaper", Application.ExecutablePath.ToString());
-            notifyIcon1.ShowBalloonTip(1000, "Start With StartUp Windows", "Activated", ToolTipIcon.Info);
-        }
+        
 
         private async void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -542,11 +543,11 @@ namespace SpotlightWallpaper
             await this.getwallzUnSplash();
         }
 
-        private void deAcToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SetDefaultStartAppWithStartUpWindows()
         {
             var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            reg.DeleteValue("SpotlightWallpaper",false);
-            notifyIcon1.ShowBalloonTip(1000, "DeActivated Start With StartUp Windows", "DeActivated", ToolTipIcon.Info);
+            reg.SetValue("SpotlightWallpaper", Application.ExecutablePath.ToString());
         }
+        
     }
 }

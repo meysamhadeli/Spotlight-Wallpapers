@@ -24,6 +24,7 @@ namespace SpotlightWallpaper.Services
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
             List<string> ext = new List<string> {".jpg", ".jpeg"};
 
+            
             var response = await GetBatchResponseAsync();
             var deserializeRoot = JsonConvert.DeserializeObject<Root>(response);
             if (deserializeRoot.batchrsp?.errors != null)
@@ -41,6 +42,36 @@ namespace SpotlightWallpaper.Services
             return saveName;
         }
 
+        
+        public static async Task<string> RunSpootlightJob()
+        {
+            string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
+            List<string> ext = new List<string> {".jpg", ".jpeg"};
+            List<string> imageNames = new List<string>();
+            int counter = 0;
+            while (counter < 3)
+            {
+                var response = await GetBatchResponseAsync();
+                var deserializeRoot = JsonConvert.DeserializeObject<Root>(response);
+                if (deserializeRoot.batchrsp?.errors != null)
+                    throw new Exception();
+            
+                var images = await GetImageInfo(response);
+                var files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
+                    .Where(path => ext.Contains(Path.GetExtension(path.Name)))
+                    .Select(x => new FileInfo(x.FullName)).OrderByDescending(f => f.LastWriteTime).ToList();
+
+                var iName = await WriteImage(images.Landscape.Url, files);
+                if (iName != null)
+                {
+                    ++counter;
+                    imageNames.Add($"{patch}\\{iName}.jpg");
+                }
+            }
+            return imageNames?.Last();
+        }
+        
+        
         /// <summary>
         /// Consumes MsnArc API to retrieve a JSON object of Windows Spotlight images.
         /// </summary>
