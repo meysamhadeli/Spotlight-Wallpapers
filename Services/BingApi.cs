@@ -20,7 +20,6 @@ namespace SpotlightWallpaper.Services
     internal class BingApi
     {
         public const string Url = "https://www.bing.com";
-        
         private static RestClient _restClient;
 
         public BingApi()
