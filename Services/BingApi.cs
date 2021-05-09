@@ -6,12 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
 using RestSharp;
 using RestSharp.Deserializers;
 
@@ -19,71 +14,98 @@ namespace SpotlightWallpaper.Services
 {
     internal class BingApi
     {
-        public const string Url = "https://www.bing.com";
-        private static RestClient _restClient;
-
-        public BingApi()
-        {
-            _restClient = new RestClient(Url);
-        }
-
+        private const string Url = "https://www.bing.com";
+        
         public static async Task<string> GetBingImage()
         {
-            var client = new RestClient("https://cn.bing.com/");
-            var request = new RestRequest("HPImageArchive.aspx?idx=0&n=1&format=js", Method.GET);
-            var response = await client.ExecuteAsync<dynamic>(request);
+            var (saveImages, response) = await SaveImages();
+
+            foreach (var image in response.Data.Images)
+            {
+                
+                if (CheckExistImage(image, saveImages, out var ImageSavePath)) return null;
+
+                try
+                {
+                    await DownloadImage(image, ImageSavePath);
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+
+            return saveImages.LastOrDefault();
+        }
+
+        private static async Task<(List<string> saveImages, IRestResponse<HPImageArchive> response)> SaveImages()
+        {
+            var client = new RestClient(Url);
+            var request = new RestRequest("HPImageArchive.aspx", Method.GET);
+            List<string> saveImages = new List<string>();
+            request.AddParameter("format", "js");
+            request.AddParameter("mkt", "en-US");
+            request.AddParameter("n", 8);
+
+            var response = await client.ExecuteAsync<HPImageArchive>(request);
+
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception();
-            string imageName = (response.Data["images"][0]["title"] + ".jpg");
-            imageName = CheckIlligalCharacter(imageName);
-            string imageUrl = response.Data["images"][0]["url"];
-            var imageRequest = new RestRequest(imageUrl, Method.GET);
-            Byte[] imageBytes = null;
+            return (saveImages, response);
+        }
 
-            await Task.Run(() => { imageBytes = client.DownloadData(imageRequest); });
-
-            string ImageSavePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing\{imageName?.Replace(" ",".")}";
-
+        private static bool CheckExistImage(HPImageArchiveImage image, List<string> saveImages, out string ImageSavePath)
+        {
+            ImageSavePath =
+                $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing\{image.Title?.Replace(" ", ".")}.jpeg";
+            saveImages.Add(ImageSavePath);
             List<string> ext = new List<string> {".jpg", ".jpeg"};
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
-            
+
             if (!Directory.Exists(patch))
             {
                 Directory.CreateDirectory(patch);
             }
-            
+
             var files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
                 .Where(path => ext.Contains(Path.GetExtension(path.Name)))
                 .Select(x => new FileInfo(x.FullName)).OrderByDescending(f => f.LastWriteTime).ToList();
 
             var names = files.Select(x => x.Name).ToList();
-            if (names.Contains(imageName?.Replace(" ",".")))
+            if (names.Contains(image.Title?.Replace(" ", ".")))
             {
-                return null;
+                return true;
             }
 
-            try
-            {
-                using (FileStream sourceStream = new FileStream(ImageSavePath,
-                    FileMode.Append, FileAccess.Write, FileShare.None,
-                    bufferSize: 4096, useAsync: true))
-                {
-                    await sourceStream.WriteAsync(imageBytes,0, imageBytes.Length);
-                };
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-          
-            return ImageSavePath;
+            return false;
+        }
+
+        private static async Task DownloadImage(HPImageArchiveImage image, string ImageSavePath)
+        {
+            var httpClient = new HttpClient();
+
+            var res = await httpClient.GetAsync(Url + image.Url);
+
+            var stream = await res.Content.ReadAsStreamAsync();
+
+            var result = Image.FromStream(stream);
+
+            result.Save(ImageSavePath, ImageFormat.Jpeg);
         }
         
-        private static string CheckIlligalCharacter (string strIn)
+        internal class HPImageArchive
         {
-            var regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-            var r = new Regex(string.Format("[{0}]", Regex.Escape(regexSearch)));
-            return r.Replace(strIn,"");
+            [DeserializeAs(Name = "images")] public List<HPImageArchiveImage> Images { get; set; }
+        }
+
+
+        internal class HPImageArchiveImage
+
+        {
+            [DeserializeAs(Name = "url")] public string Url { get; set; }
+            [DeserializeAs(Name = "title")] public string Title { get; set; }
+            [DeserializeAs(Name = "copyright")] public string Copyright { get; set; }
+            [DeserializeAs(Name = "hsh")] public string Hash { get; set; }
         }
     }
 }

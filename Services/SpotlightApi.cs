@@ -70,12 +70,7 @@ namespace SpotlightWallpaper.Services
             }
             return imageNames?.Last();
         }
-        
-        
-        /// <summary>
-        /// Consumes MsnArc API to retrieve a JSON object of Windows Spotlight images.
-        /// </summary>
-        /// <returns>A JSON object containing another JSON object which contains image info.</returns>
+
         public static async Task<string> GetBatchResponseAsync()
         {
             CultureInfo currentCulture = CultureInfo.CurrentCulture;
@@ -105,12 +100,7 @@ namespace SpotlightWallpaper.Services
             }
         }
 
-        /// <summary>
-        /// Extracts image info from nested batch response JSON object.
-        /// </summary>
-        /// <param name="batchResponse">Batch response JSON object, ideally from GetbatchResponseAsync().</param>
-        /// <returns>A ImageInfo containing info of landscape and portrait spotlight images.</returns>
-        public async static Task<ImageInfos> GetImageInfo(string batchResponse)
+        private async static Task<ImageInfos> GetImageInfo(string batchResponse)
         {
             return await Task.Run<ImageInfos>(() =>
             {
@@ -126,12 +116,8 @@ namespace SpotlightWallpaper.Services
             });
         }
 
-        /// <summary>
-        /// Downloads a image and write it to working directory and return its filename.
-        /// </summary>
-        /// <param name="imageUrl">Image URL to download.</param>
-        /// <returns>The file name of the downloaded image.</returns>
-        public static async Task<string> WriteImage(string imageUrl, List<FileInfo> files)
+
+        private static async Task<string> WriteImage(string imageUrl, List<FileInfo> files)
         {
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
             string imageName = imageUrl.Split('/').Last().Split('?')[0];
@@ -152,12 +138,9 @@ namespace SpotlightWallpaper.Services
                 {
                     var content = await imageResponse.Content.ReadAsByteArrayAsync();
                     await sourceStream.WriteAsync(content, 0, content.Length);
-                }
-
-                ;
+                } ;
             }
-
-
+            
             return imageName;
         }
 
