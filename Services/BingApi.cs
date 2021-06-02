@@ -13,6 +13,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using RestSharp.Deserializers;
+using SpotlightWallpaper.Jobs;
 
 namespace SpotlightWallpaper.Services
 {
@@ -78,5 +79,58 @@ namespace SpotlightWallpaper.Services
             return ImageSavePath;
         }
 
+                public static async Task RunBingJob()
+        {
+            var client = new RestClient("https://www.bing.com/");
+            var request = new RestRequest("HPImageArchive.aspx?format=js&mkt=en-US&n=1", Method.GET);
+            var response = await client.ExecuteAsync<dynamic>(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception();
+            string imageName = (response.Data["images"][0]["title"] + ".jpg");
+            string imageUrl = response.Data["images"][0]["url"];
+            var imageRequest = new RestRequest(imageUrl, Method.GET);
+            Byte[] imageBytes = null;
+
+            await Task.Run(() => { imageBytes = client.DownloadData(imageRequest); });
+
+            string ImageSavePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing\{imageName?.Replace(" ",".")}";
+
+            List<string> ext = new List<string> {".jpg", ".jpeg"};
+            string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Bing";
+            
+            if (!Directory.Exists(patch))
+            {
+                Directory.CreateDirectory(patch);
+            }
+            
+            var files = new DirectoryInfo(patch).EnumerateFiles("*.*", SearchOption.AllDirectories)
+                .Where(path => ext.Contains(Path.GetExtension(path.Name)))
+                .Select(x => new FileInfo(x.FullName)).OrderByDescending(f => f.LastWriteTime).ToList();
+
+            var names = files.Select(x => x.Name).ToList();
+            if (names.Contains(imageName?.Replace(" ",".")))
+            {
+                return;
+            }
+
+            try
+            {
+                using (FileStream sourceStream = new FileStream(ImageSavePath,
+                    FileMode.Append, FileAccess.Write, FileShare.None,
+                    bufferSize: 4096, useAsync: true))
+                {
+                    await sourceStream.WriteAsync(imageBytes,0, imageBytes.Length);
+                };
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            await MyRegistry.SetWall(ImageSavePath);
+
+        }
+
+        
     }
 }

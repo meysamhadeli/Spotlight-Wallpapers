@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SpotlightWallpaper.CustomException;
+using SpotlightWallpaper.Jobs;
 using SpotlightWallpaper.My;
 using SpotlightWallpaper.Settings;
 
@@ -43,7 +44,7 @@ namespace SpotlightWallpaper.Services
         }
 
         
-        public static async Task<string> RunSpootlightJob()
+        public static async Task RunSpootlightJob()
         {
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
             List<string> ext = new List<string> {".jpg", ".jpeg"};
@@ -68,7 +69,8 @@ namespace SpotlightWallpaper.Services
                     imageNames.Add($"{patch}\\{iName}.jpg");
                 }
             }
-            return imageNames?.Last();
+
+            await MyRegistry.SetWall(imageNames?.Last());
         }
 
         public static async Task<string> GetBatchResponseAsync()
