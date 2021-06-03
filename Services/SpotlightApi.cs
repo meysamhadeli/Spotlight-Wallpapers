@@ -44,7 +44,7 @@ namespace SpotlightWallpaper.Services
         }
 
         
-        public static async Task RunSpootlightJob()
+        public static async Task RunSpootlightJob(string wallpaperBing)
         {
             string patch = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\Spotlight";
             List<string> ext = new List<string> {".jpg", ".jpeg"};
@@ -69,8 +69,8 @@ namespace SpotlightWallpaper.Services
                     imageNames.Add($"{patch}\\{iName}.jpg");
                 }
             }
-
-            await MyRegistry.SetWall(imageNames?.Last());
+            if(string.IsNullOrEmpty(wallpaperBing))
+                await MyRegistry.SetWall(imageNames?.Last());
         }
 
         public static async Task<string> GetBatchResponseAsync()
