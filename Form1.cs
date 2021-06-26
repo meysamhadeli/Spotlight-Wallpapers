@@ -548,6 +548,10 @@ namespace SpotlightWallpaper
             var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
             reg.SetValue("SpotlightWallpaper", Application.ExecutablePath.ToString());
         }
-        
+
+        private void PictureBox1_Click(object sender, EventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

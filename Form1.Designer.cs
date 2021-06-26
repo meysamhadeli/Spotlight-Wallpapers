@@ -131,6 +131,7 @@ namespace SpotlightWallpaper
 		    this.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 		    this.PictureBox1.TabIndex = 6;
 		    this.PictureBox1.TabStop = false;
+		    this.PictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
 		    // 
 		    // Label1
 		    // 
@@ -304,6 +305,7 @@ namespace SpotlightWallpaper
 		    this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
 		    this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 		    this.Name = "Form1";
+		    this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 		    this.Text = "Windows Spotlight Wallpaper";
 		    this.Load += new System.EventHandler(this.Form1_Load);
 		    this.Move += new System.EventHandler(this.Form1_Move);
